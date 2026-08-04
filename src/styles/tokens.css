@@ -1,0 +1,131 @@
+/*
+  SANAD design tokens.
+  Source of truth: design/SANAD_Color_Palette.md and design/sanad-colors.json.
+  Do not hardcode hex values in components — use the semantic Tailwind
+  utilities generated from these variables (bg-background, text-primary,
+  bg-danger, etc.) instead.
+*/
+
+:root {
+  /* Brand scale */
+  --brand-900: #3a241a;
+  --brand-800: #4a2e22;
+  --brand-700: #624032;
+  --brand-600: #7a5544;
+  --brand-500: #9a715e;
+  --brand-300: #c7a894;
+  --brand-200: #ddc8b8;
+  --brand-100: #eee1d5;
+  --brand-50: #f7f0ea;
+
+  /* Surfaces */
+  --background: #fcf9f6;
+  --surface: #fffdfc;
+  --surface-soft: #f5ece4;
+  --surface-strong: #e9d8ca;
+  --border-default: #d8c3b3;
+  --border-strong: #b99179;
+
+  /* Text */
+  --text-primary: #2b1a14;
+  --text-secondary: #6f574b;
+  --text-muted: #927b70;
+  --text-inverse: #fffdfc;
+
+  /* Accents */
+  --gold: #f2b84b;
+  --gold-soft: #fbe8b6;
+  --peach: #d99a75;
+  --lavender-calm: #a99bef;
+  --lavender-soft: #eeeafe;
+
+  /* Functional */
+  --success: #2f7d5a;
+  --success-soft: #dff1e8;
+  --warning: #b7791f;
+  --warning-soft: #f9ebcb;
+  --danger: #d64545;
+  --danger-hover: #b93434;
+  --danger-soft: #fbe3e3;
+  --info: #3f6e8a;
+  --info-soft: #e3eef4;
+
+  /* shadcn/ui semantic mapping (kept in sync with the tokens above) */
+  --background-app: var(--background);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand-800);
+  --primary-hover: var(--brand-900);
+  --primary-foreground: var(--text-inverse);
+  --secondary: var(--brand-100);
+  --secondary-foreground: var(--brand-900);
+  --muted: var(--surface-soft);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--gold-soft);
+  --accent-foreground: var(--brand-900);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--text-inverse);
+  --border: var(--border-default);
+  --input: var(--border-default);
+  --ring: var(--border-strong);
+  --focus-ring: var(--border-strong);
+  --radius: 1rem;
+}
+
+.dark {
+  --background: #17110e;
+  --surface: #241a16;
+  --surface-soft: #30221c;
+  --surface-strong: #3a241a;
+  --border-default: #5b4337;
+  --border-strong: #7a5544;
+
+  --text-primary: #fff8f3;
+  --text-secondary: #d8c5b8;
+  --text-muted: #aa9081;
+  --text-inverse: #2b1a14;
+
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand-200);
+  --primary-hover: var(--brand-100);
+  --primary-foreground: var(--brand-900);
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--surface-soft);
+  --muted-foreground: var(--text-secondary);
+  --accent: #4a3b22;
+  --accent-foreground: var(--gold-soft);
+  --border: var(--border-default);
+  --input: var(--border-default);
+  --ring: var(--border-strong);
+  --focus-ring: var(--brand-200);
+}
+
+/*
+  Calm mode: reduced visual clutter and a limited lavender accent, per the
+  brief's "ADHD-friendly" mode. Contrast is intentionally left unchanged —
+  calm mode must never reduce readability.
+*/
+.calm {
+  --accent: var(--lavender-soft);
+  --accent-foreground: var(--brand-900);
+  --focus-ring: var(--lavender-calm);
+  --surface-strong: var(--lavender-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

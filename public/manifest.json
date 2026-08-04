@@ -1,0 +1,24 @@
+{
+  "name": "SANAD",
+  "short_name": "SANAD",
+  "description": "SANAD connects smart glasses with a mobile app to assist people with hearing, vision, and speech needs.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FCF9F6",
+  "theme_color": "#4A2E22",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

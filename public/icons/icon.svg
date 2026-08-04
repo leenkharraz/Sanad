@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SANAD">
+  <rect width="512" height="512" rx="112" fill="#4A2E22" />
+  <path
+    d="M128 288a53 53 0 1 1 106 0 53 53 0 0 1-106 0Zm150 0a53 53 0 1 1 106 0 53 53 0 0 1-106 0Zm-96-10.6h42.6"
+    stroke="#FFFDFC"
+    stroke-width="22"
+    stroke-linecap="round"
+    fill="none"
+  />
+  <circle cx="322" cy="150" r="24" fill="#F2B84B" />
+</svg>

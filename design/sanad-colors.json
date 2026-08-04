@@ -1,0 +1,54 @@
+{
+  "brand": {
+    "900": "#3A241A",
+    "800": "#4A2E22",
+    "700": "#624032",
+    "600": "#7A5544",
+    "500": "#9A715E",
+    "300": "#C7A894",
+    "200": "#DDC8B8",
+    "100": "#EEE1D5",
+    "50": "#F7F0EA"
+  },
+  "surface": {
+    "background": "#FCF9F6",
+    "surface": "#FFFDFC",
+    "surfaceSoft": "#F5ECE4",
+    "surfaceStrong": "#E9D8CA",
+    "border": "#D8C3B3",
+    "borderStrong": "#B99179"
+  },
+  "text": {
+    "primary": "#2B1A14",
+    "secondary": "#6F574B",
+    "muted": "#927B70",
+    "inverse": "#FFFDFC"
+  },
+  "accent": {
+    "gold": "#F2B84B",
+    "goldSoft": "#FBE8B6",
+    "peach": "#D99A75",
+    "lavenderCalm": "#A99BEF",
+    "lavenderSoft": "#EEEAFE"
+  },
+  "functional": {
+    "success": "#2F7D5A",
+    "successSoft": "#DFF1E8",
+    "warning": "#B7791F",
+    "warningSoft": "#F9EBCB",
+    "danger": "#D64545",
+    "dangerHover": "#B93434",
+    "dangerSoft": "#FBE3E3",
+    "info": "#3F6E8A",
+    "infoSoft": "#E3EEF4"
+  },
+  "dark": {
+    "background": "#17110E",
+    "surface": "#241A16",
+    "surfaceSoft": "#30221C",
+    "border": "#5B4337",
+    "textPrimary": "#FFF8F3",
+    "textSecondary": "#D8C5B8",
+    "muted": "#AA9081"
+  }
+}
