@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AppLogo } from "@/components/design-system/app-logo";
+import { BrandLogo } from "@/components/design-system/brand-logo";
 import { usePreferences } from "@/components/providers/preferences-provider";
 import { useSession } from "@/components/providers/session-provider";
 
@@ -34,20 +34,20 @@ export default function SplashPage() {
   }, [router, session, sessionLoaded, preferences.onboardingComplete, preferences.personalizationComplete, preferencesLoaded]);
 
   return (
-    <div
-      className="flex min-h-dvh flex-1 flex-col items-center justify-center gap-6 px-6 text-center"
-      style={{
-        background:
-          "linear-gradient(145deg, #FCF9F6 0%, #F5ECE4 48%, #E9D8CA 100%)",
-      }}
-    >
-      <div className="animate-pulse motion-reduce:animate-none">
-        <AppLogo className="size-20 drop-shadow-sm" />
+    <div className="relative flex min-h-dvh flex-1 items-center justify-center overflow-hidden bg-[#FEF3E9]">
+      {/* Layered, blurred radial gradients recreating the Figma entry screen */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 -left-16 size-72 rounded-full bg-[#A6866E]/50 blur-3xl" />
+        <div className="absolute -top-10 right-0 size-80 rounded-full bg-[#B89D88]/45 blur-3xl" />
+        <div className="absolute bottom-[-15%] left-1/2 size-[26rem] -translate-x-1/2 rounded-full bg-[#DBCABB]/60 blur-3xl" />
+        <div className="absolute right-[-10%] bottom-0 size-72 rounded-full bg-[#EADBCD]/70 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FEF3E9]/40 to-[#FEF3E9]/80" />
       </div>
-      <div className="space-y-1">
-        <p className="text-2xl font-semibold tracking-tight text-text-primary">SANAD</p>
-        <p className="text-sm text-text-secondary">Smart glasses. Connected assistance.</p>
+
+      <div className="relative flex flex-col items-center gap-3 px-6 text-center animate-in fade-in duration-700 motion-reduce:animate-none">
+        <BrandLogo variant="full" priority className="h-28 w-auto drop-shadow-sm" />
       </div>
+
       <span className="sr-only" role="status">
         Loading SANAD
       </span>

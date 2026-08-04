@@ -28,8 +28,8 @@ export const metadata: Metadata = {
     title: "SANAD",
   },
   icons: {
-    icon: "/icons/icon.svg",
-    apple: "/icons/icon.svg",
+    icon: "/assets/sanad-logo.png",
+    apple: "/assets/sanad-logo.png",
   },
 };
 
@@ -38,7 +38,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
-  themeColor: "#4A2E22",
+  themeColor: "#FAF0E6",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

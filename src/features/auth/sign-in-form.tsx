@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, ScanFace } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -112,6 +112,17 @@ export function SignInForm() {
         {isSubmitting && <Loader2 aria-hidden="true" className="size-4 animate-spin" />}
         Sign in
       </Button>
+
+      <button
+        type="button"
+        disabled
+        aria-disabled="true"
+        title="Face ID sign-in is a prototype placeholder and is not connected yet."
+        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-medium text-text-secondary opacity-60"
+      >
+        <ScanFace aria-hidden="true" className="size-4.5" />
+        Sign in with Face ID
+      </button>
 
       <div className="flex items-center gap-3 py-1 text-xs text-text-muted">
         <span className="h-px flex-1 bg-border" />

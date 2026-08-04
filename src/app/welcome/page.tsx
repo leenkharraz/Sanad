@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Ear, Eye, MessageCircle } from "lucide-react";
-import { AppLogo } from "@/components/design-system/app-logo";
+import { BrandLogo } from "@/components/design-system/brand-logo";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/providers/session-provider";
 import { DEMO_USER } from "@/lib/mock-auth";
@@ -18,13 +18,15 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="flex min-h-dvh flex-1 flex-col bg-background">
-      <div className="safe-top flex flex-1 flex-col items-center justify-center px-6 py-10 text-center">
-        <AppLogo className="size-16" />
-        <h1 className="mt-5 text-3xl font-semibold tracking-tight text-text-primary">
-          SANAD
-        </h1>
-        <p className="mt-2 max-w-xs text-balance text-base text-text-secondary">
+    <div className="relative flex min-h-dvh flex-1 flex-col overflow-hidden bg-background">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-20 -left-20 size-64 rounded-full bg-[#A6866E]/35 blur-3xl" />
+        <div className="absolute -top-10 right-[-10%] size-72 rounded-full bg-[#DBCABB]/45 blur-3xl" />
+      </div>
+
+      <div className="safe-top relative flex flex-1 flex-col items-center justify-center px-6 py-10 text-center">
+        <BrandLogo variant="full" priority className="h-24 w-auto" />
+        <p className="mt-3 max-w-xs text-balance text-base text-text-secondary">
           Smart glasses and a connected app, working together to support how you
           hear, see, and speak.
         </p>
@@ -51,7 +53,7 @@ export default function WelcomePage() {
         </ul>
       </div>
 
-      <div className="safe-bottom safe-x mx-auto flex w-full max-w-sm flex-col gap-3 px-6 pb-8">
+      <div className="safe-bottom safe-x relative mx-auto flex w-full max-w-sm flex-col gap-3 px-6 pb-8">
         <Button asChild size="touch" className="w-full">
           <Link href="/auth/sign-in">Sign in</Link>
         </Button>

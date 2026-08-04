@@ -54,6 +54,11 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     root.dataset.fontSize = preferences.fontSize;
     root.lang = preferences.language;
     root.dir = preferences.language === "ar" ? "rtl" : "ltr";
+
+    const themeColor = preferences.themeMode === "dark" ? "#1E1E1E" : "#FAF0E6";
+    document
+      .querySelectorAll('meta[name="theme-color"]')
+      .forEach((meta) => meta.setAttribute("content", themeColor));
   }, [preferences.themeMode, preferences.fontSize, preferences.language]);
 
   const updatePreferences = useCallback((patch: Partial<UserPreferences>) => {

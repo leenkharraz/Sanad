@@ -42,9 +42,6 @@
   --color-text-inverse: var(--text-inverse);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
-  --color-peach: var(--peach);
-  --color-lavender-calm: var(--lavender-calm);
-  --color-lavender-soft: var(--lavender-soft);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);
@@ -101,4 +98,19 @@
   .app-viewport {
     min-height: 100dvh;
   }
+}
+
+@keyframes sanad-wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-wave {
+  animation: sanad-wave 1s ease-in-out infinite;
+  transform-origin: center;
 }

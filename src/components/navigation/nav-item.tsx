@@ -20,15 +20,11 @@ export function BottomNavItem({ item }: { item: NavItemData }) {
       href={item.href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex min-h-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl py-1.5 text-xs font-medium transition-colors",
-        active ? "text-primary" : "text-text-muted hover:text-text-secondary"
+        "flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1.5 text-[0.7rem] font-medium transition-colors",
+        active ? "bg-surface-soft text-brand-700" : "text-text-muted hover:text-text-secondary"
       )}
     >
-      <Icon
-        aria-hidden="true"
-        className={cn("size-5", active && "fill-primary/10")}
-        strokeWidth={active ? 2.4 : 2}
-      />
+      <Icon aria-hidden="true" className="size-5" strokeWidth={active ? 2.4 : 1.8} />
       <span>{item.label}</span>
     </Link>
   );

@@ -1,6 +1,9 @@
 export const STORAGE_KEYS = {
   session: "sanad.session",
   preferences: "sanad.preferences",
+  quickPhrases: "sanad.quickPhrases",
+  emergencyContacts: "sanad.emergencyContacts",
+  emergencyMessage: "sanad.emergencyMessage",
 } as const;
 
 export function readStorage<T>(key: string): T | null {

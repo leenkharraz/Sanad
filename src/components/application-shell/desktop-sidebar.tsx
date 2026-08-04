@@ -2,7 +2,7 @@ import Link from "next/link";
 import { APP_NAV_ITEMS } from "@/data/nav-items";
 import { SidebarNavItem } from "@/components/navigation/nav-item";
 import { EmergencyQuickAction } from "@/components/navigation/emergency-quick-action";
-import { AppLogo } from "@/components/design-system/app-logo";
+import { BrandLogo } from "@/components/design-system/brand-logo";
 
 export function DesktopSidebar() {
   return (
@@ -11,9 +11,8 @@ export function DesktopSidebar() {
       className="safe-top hidden w-64 shrink-0 flex-col border-r border-border bg-surface md:flex"
     >
       <div className="flex items-center gap-2 px-5 py-6">
-        <Link href="/app/home" className="flex items-center gap-2">
-          <AppLogo className="size-8" />
-          <span className="text-lg font-semibold text-text-primary">SANAD</span>
+        <Link href="/app/home" className="flex items-center">
+          <BrandLogo variant="full" className="h-9 w-auto" />
         </Link>
       </div>
       <nav className="flex flex-1 flex-col gap-1 px-3">

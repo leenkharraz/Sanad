@@ -1,0 +1,44 @@
+/* SANAD Figma-aligned semantic tokens */
+:root {
+  --background: #FAF0E6;
+  --surface: #FCF9F5;
+  --surface-card: #E2CBB8;
+  --surface-card-muted: #C6AF9E;
+  --border-default: #AF9681;
+  --text-primary: #463930;
+  --text-secondary: #7B695C;
+  --primary: #623B21;
+  --primary-hover: #53311B;
+  --primary-foreground: #FFFFFF;
+  --danger: #F45B65;
+  --danger-soft: #FAD7D9;
+  --gold: #F4B84A;
+}
+
+.dark {
+  --background: #1E1E1E;
+  --surface: #464646;
+  --surface-card: #464646;
+  --surface-card-muted: #595958;
+  --border-default: #9A9797;
+  --text-primary: #FAF8F5;
+  --text-secondary: #D6D3D0;
+  --primary: #FAF8F5;
+  --primary-hover: #FFFFFF;
+  --primary-foreground: #1E1E1E;
+  --danger: #F45B65;
+}
+
+.calm {
+  --background: #FAF0E6;
+  --surface: #FCF9F5;
+  --surface-card: #DDE8EB;
+  --surface-card-muted: #DDE8EB;
+  --border-default: #CCCDE1;
+  --text-primary: #52506F;
+  --text-secondary: #686684;
+  --primary: #9F9EE5;
+  --primary-hover: #8F8EDB;
+  --primary-foreground: #FFFFFF;
+  --danger: #FAAFB1;
+}

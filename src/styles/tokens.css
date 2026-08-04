@@ -1,54 +1,63 @@
 /*
-  SANAD design tokens.
-  Source of truth: design/SANAD_Color_Palette.md and design/sanad-colors.json.
+  SANAD design tokens — Figma-aligned V2.
+  Source of truth: design/SANAD_Color_Palette_v2.md and src/styles/sanad-colors-v2.css.
   Do not hardcode hex values in components — use the semantic Tailwind
   utilities generated from these variables (bg-background, text-primary,
   bg-danger, etc.) instead.
+
+  Rule: brown is an accent (text, borders, icons, buttons), never the
+  dominant page surface. Light mode is cream/white/beige. Dark mode is
+  true charcoal/graphite, never brown-tinted. Calm mode is cream + soft
+  blue-gray + periwinkle.
 */
 
 :root {
-  /* Brand scale */
-  --brand-900: #3a241a;
-  --brand-800: #4a2e22;
-  --brand-700: #624032;
-  --brand-600: #7a5544;
-  --brand-500: #9a715e;
-  --brand-300: #c7a894;
-  --brand-200: #ddc8b8;
-  --brand-100: #eee1d5;
-  --brand-50: #f7f0ea;
+  /* Brand scale — brown accent only, used for icons/links/selected states */
+  --brand-900: #3b2313;
+  --brand-800: #53311b;
+  --brand-700: #623b21;
+  --brand-600: #7c5738;
+  --brand-500: #9a7b62;
+  --brand-300: #c6af9e;
+  --brand-200: #e2cbb8;
+  --brand-100: #efe0d3;
+  --brand-50: #fcf9f5;
 
   /* Surfaces */
-  --background: #fcf9f6;
-  --surface: #fffdfc;
-  --surface-soft: #f5ece4;
-  --surface-strong: #e9d8ca;
-  --border-default: #d8c3b3;
-  --border-strong: #b99179;
+  --background: #faf0e6;
+  --surface: #fcf9f5;
+  --surface-soft: #e2cbb8;
+  --surface-strong: #c6af9e;
+  --border-default: #af9681;
+  --border-strong: #7c5738;
 
   /* Text */
-  --text-primary: #2b1a14;
-  --text-secondary: #6f574b;
-  --text-muted: #927b70;
-  --text-inverse: #fffdfc;
+  --text-primary: #463930;
+  --text-secondary: #7b695c;
+  --text-muted: #9c8b7e;
+  --text-inverse: #ffffff;
 
   /* Accents */
-  --gold: #f2b84b;
-  --gold-soft: #fbe8b6;
-  --peach: #d99a75;
-  --lavender-calm: #a99bef;
-  --lavender-soft: #eeeafe;
+  --gold: #f4b84a;
+  --gold-soft: #fbe9c4;
 
   /* Functional */
   --success: #2f7d5a;
   --success-soft: #dff1e8;
   --warning: #b7791f;
   --warning-soft: #f9ebcb;
-  --danger: #d64545;
-  --danger-hover: #b93434;
-  --danger-soft: #fbe3e3;
+  --danger: #f45b65;
+  --danger-hover: #e14550;
+  --danger-soft: #fad7d9;
   --info: #3f6e8a;
   --info-soft: #e3eef4;
+
+  /* Splash / entry blurred gradient tones */
+  --splash-1: #a6866e;
+  --splash-2: #b89d88;
+  --splash-3: #dbcabb;
+  --splash-4: #eadbcd;
+  --splash-5: #fef3e9;
 
   /* shadcn/ui semantic mapping (kept in sync with the tokens above) */
   --background-app: var(--background);
@@ -57,17 +66,17 @@
   --card-foreground: var(--text-primary);
   --popover: var(--surface);
   --popover-foreground: var(--text-primary);
-  --primary: var(--brand-800);
-  --primary-hover: var(--brand-900);
-  --primary-foreground: var(--text-inverse);
-  --secondary: var(--brand-100);
-  --secondary-foreground: var(--brand-900);
-  --muted: var(--surface-soft);
+  --primary: #623b21;
+  --primary-hover: #53311b;
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--text-primary);
+  --muted: #f1e7dc;
   --muted-foreground: var(--text-secondary);
   --accent: var(--gold-soft);
   --accent-foreground: var(--brand-900);
   --destructive: var(--danger);
-  --destructive-foreground: var(--text-inverse);
+  --destructive-foreground: #ffffff;
   --border: var(--border-default);
   --input: var(--border-default);
   --ring: var(--border-strong);
@@ -76,47 +85,109 @@
 }
 
 .dark {
-  --background: #17110e;
-  --surface: #241a16;
-  --surface-soft: #30221c;
-  --surface-strong: #3a241a;
-  --border-default: #5b4337;
-  --border-strong: #7a5544;
+  --brand-900: #faf8f5;
+  --brand-800: #595958;
+  --brand-700: #d6d3d0;
+  --brand-600: #9a9797;
+  --brand-500: #9a9797;
+  --brand-300: #595958;
+  --brand-200: #464646;
+  --brand-100: #363636;
+  --brand-50: #2a2a2a;
 
-  --text-primary: #fff8f3;
-  --text-secondary: #d8c5b8;
-  --text-muted: #aa9081;
-  --text-inverse: #2b1a14;
+  --background: #1e1e1e;
+  --surface: #464646;
+  --surface-soft: #464646;
+  --surface-strong: #595958;
+  --border-default: #9a9797;
+  --border-strong: #d6d3d0;
+
+  --text-primary: #faf8f5;
+  --text-secondary: #d6d3d0;
+  --text-muted: #abaaa9;
+  --text-inverse: #1e1e1e;
+
+  --gold: #f4b84a;
+  --gold-soft: #3a2f1c;
+
+  --success: #6fbe96;
+  --success-soft: #23342b;
+  --warning: #e0a94a;
+  --warning-soft: #3a2f1c;
+  --danger: #f45b65;
+  --danger-hover: #ff6b74;
+  --danger-soft: #3a2427;
+  --info: #7fb2ce;
+  --info-soft: #22303a;
 
   --card: var(--surface);
   --card-foreground: var(--text-primary);
   --popover: var(--surface);
   --popover-foreground: var(--text-primary);
-  --primary: var(--brand-200);
-  --primary-hover: var(--brand-100);
-  --primary-foreground: var(--brand-900);
-  --secondary: var(--surface-soft);
+  --primary: #faf8f5;
+  --primary-hover: #ffffff;
+  --primary-foreground: #1e1e1e;
+  --secondary: var(--surface-strong);
   --secondary-foreground: var(--text-primary);
-  --muted: var(--surface-soft);
+  --muted: #2a2a2a;
   --muted-foreground: var(--text-secondary);
-  --accent: #4a3b22;
-  --accent-foreground: var(--gold-soft);
+  --accent: #363636;
+  --accent-foreground: var(--text-primary);
   --border: var(--border-default);
   --input: var(--border-default);
   --ring: var(--border-strong);
-  --focus-ring: var(--brand-200);
+  --focus-ring: var(--border-strong);
 }
 
 /*
-  Calm mode: reduced visual clutter and a limited lavender accent, per the
-  brief's "ADHD-friendly" mode. Contrast is intentionally left unchanged —
-  calm mode must never reduce readability.
+  Calm mode: cream base with a soft blue-gray / periwinkle accent system,
+  matching the Figma "custom mode" prototype. Never brown, never a rainbow
+  of pastels — one accent hue only. Contrast is intentionally preserved.
 */
 .calm {
-  --accent: var(--lavender-soft);
-  --accent-foreground: var(--brand-900);
-  --focus-ring: var(--lavender-calm);
-  --surface-strong: var(--lavender-soft);
+  --brand-900: #3d3b57;
+  --brand-800: #52506f;
+  --brand-700: #5d5b8a;
+  --brand-600: #6d6b99;
+  --brand-500: #8785b8;
+  --brand-300: #cccde1;
+  --brand-200: #dde8eb;
+  --brand-100: #eaeef7;
+  --brand-50: #fcf9f5;
+
+  --background: #faf0e6;
+  --surface: #fcf9f5;
+  --surface-soft: #dde8eb;
+  --surface-strong: #dde8eb;
+  --border-default: #cccde1;
+  --border-strong: #9f9ee5;
+
+  --text-primary: #52506f;
+  --text-secondary: #686684;
+  --text-muted: #8886a0;
+  --text-inverse: #ffffff;
+
+  --danger: #faafb1;
+  --danger-hover: #f591a1;
+  --danger-soft: #fbe4e5;
+
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary: #9f9ee5;
+  --primary-hover: #8f8edb;
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--text-primary);
+  --muted: #f1eff9;
+  --muted-foreground: var(--text-secondary);
+  --accent: #eaeef7;
+  --accent-foreground: var(--brand-800);
+  --border: var(--border-default);
+  --input: var(--border-default);
+  --ring: var(--border-strong);
+  --focus-ring: var(--border-strong);
 }
 
 @media (prefers-reduced-motion: reduce) {

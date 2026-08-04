@@ -1,136 +1,134 @@
-# SANAD Implementation Status — Phase 1
+# SANAD Implementation Status
 
-Scope executed this run: **Phase 1 (Foundation)** only, per `SANAD_IMPLEMENTATION_PLAN.md`.
+Scope executed this run: **Phase 1 visual correction** (the original Phase 1 build used an
+invented brand identity and an incorrect brown-dominant palette) followed by **Phase 2**
+(Text-to-Speech, Quick Phrases, Live Captions, Emergency SOS), per `SANAD_IMPLEMENTATION_PLAN.md`.
 
-## Completed Features
+## Phase 1 Visual Correction
 
-- Design tokens: full SANAD palette (`design/SANAD_Color_Palette.md`, `design/sanad-colors.json`)
-  wired into `src/styles/tokens.css` and exposed as Tailwind v4 semantic utilities
-  (`bg-background`, `text-primary`, `bg-danger`, `bg-surface-soft`, etc.) via `@theme inline` in
-  `src/app/globals.css`. No component hardcodes a hex value.
-- Responsive application shell (`src/components/application-shell/app-shell.tsx`): bottom
-  tab bar on mobile, a compact icon+label sidebar on tablet/desktop (`md:` breakpoint), centered
-  max-width content column on larger screens so the authenticated app never stretches into a
-  website layout.
-- Global, non-dominant SOS quick action: a pill button in the mobile header and at the bottom of
-  the desktop sidebar, linking to the (stubbed) `/app/emergency` screen.
-- Splash screen with branded gradient, reduced-motion-aware animation, and session/onboarding-aware
-  auto-redirect.
-- Welcome screen with sign-in / create account / continue-as-demo, not styled as a marketing page.
-- Auth: sign-in, sign-up, and forgot-password screens with React Hook Form + Zod validation
-  (empty-field, invalid-email, password rules, confirm-password match), loading state, error
-  state, and disabled-state handling. Google/Apple/Nafath buttons are visibly disabled and labeled
-  "Prototype integrations — not connected yet" — they do not pretend to work.
-- Demo-user flow: "Continue as demo user" signs in immediately with a fixed fictional demo
-  account and proceeds to onboarding.
-- Accessibility-needs onboarding: three large multi-select cards (Hearing / Visual / Speech) with
-  icon, description, feature chips, selected state, keyboard support (`role="switch"`,
-  `aria-checked`), and Skip / Continue.
-- Personalization step: language (English/Arabic), font size, and appearance (Light/Dark/Calm)
-  are fully functional and persisted; emergency-contact and glasses setup are shown as
-  informational "available soon" rows rather than fake interactive controls.
-- Home dashboard: greeting + date, glasses connection card (honestly "Not connected" — no real
-  device exists), Aura shortcut, three mode cards (Hear/See/Speak) reordered by the user's
-  selected accessibility needs and tagged "For you", and an honest empty state for recent activity
-  (no fabricated history).
-- Settings: functional editors for accessibility needs, language, font size, and appearance
-  (the same state used everywhere else), a sign-out action, and a clearly labeled "Phase 4" list
-  for the settings groups not yet built (Smart Glasses, Caption Display, Emotion & Urgency, Voice
-  Settings, Translation, Vision Assistance, Emergency, Privacy, About SANAD).
-- Profile: account name/email/avatar and an honest note that extended fields (age, allergies,
-  emergency contacts) are not collected yet.
-- Local persistence: `UserPreferences` and `AuthSession` are stored in `localStorage`
-  (`src/lib/storage.ts`) via React context providers, hydrated safely post-mount to avoid SSR
-  hydration mismatches.
-- PWA skeleton: `public/manifest.json`, an SVG app icon, Apple web-app meta tags, safe-area-aware
-  viewport config, and a minimal hand-written service worker (`public/sw.js`) that caches only the
-  static shell (`/`, manifest, icon) — registered in production builds only.
-- Stub routes for every Phase 2–4 destination the navigation links to (`/app/hearing`,
-  `/app/vision`, `/app/speech`, `/app/aura`, `/app/emergency`, `/app/glasses`, `/app/assist`) so
-  navigation is fully wired end-to-end with honest "coming in a later phase" empty states —
-  nothing is a dead/broken button.
+The prior Phase 1 pass was functionally correct but visually wrong: it used a drawn SVG "glasses"
+square as a fake logo, and a brown-dominant palette (including a near-black brown dark mode) that
+did not match the SANAD Figma. This run replaces both, using the Figma/PDF brief, the exact logo
+asset, and the v2 palette as the source of truth.
 
-## Real Browser-Supported Features (Phase 1)
+- **Real logo restored.** `public/assets/sanad-logo.png` (the actual SANAD glasses + Arabic سند +
+  SANAD wordmark) is now the only brand mark in the app, rendered by
+  `src/components/design-system/brand-logo.tsx`. The old invented `AppLogo` SVG and the fake
+  `public/icons/icon.svg` brand square are deleted. Used on: splash, welcome, auth header,
+  desktop sidebar, and PWA manifest/metadata icons.
+  - The supplied PNG had a solid black background baked in (not transparent — verified via PNG
+    color-type inspection, not a guess). With your explicit approval, I ran a one-time background
+    key-out (flood/threshold on near-black pixels with an anti-aliased edge ramp, no interior
+    artwork touched) and replaced `public/assets/sanad-logo.png` with the transparent result. The
+    original is preserved for comparison — see Files Changed. No new mark was drawn; only the
+    background of your exact file was removed.
+  - Next.js's built-in image optimizer was independently found to drop the alpha channel when
+    re-encoding this PNG to WebP (confirmed by comparing a raw `sharp` pipeline, which preserved
+    alpha, against the Next.js `/_next/image` route, which didn't). `BrandLogo` uses `unoptimized`
+    on `next/image` for this asset to route around that bug rather than fight it.
+- **Palette rebuilt from `design/SANAD_Color_Palette_v2.md`.** `src/styles/tokens.css` keeps the
+  same semantic token names components already used (`background`, `surface`, `surface-soft`,
+  `border`, `text-primary`, `primary`, `danger`, `gold`, `brand-700/800`, etc.) but every hex value
+  now comes from the v2 palette, so no component needed per-file rewrites. Light mode is cream/
+  beige/white (`#FAF0E6` background, `#FCF9F5` surface); brown (`#623B21` / `#53311B`) is confined
+  to text, icons, borders, and buttons, never large surfaces.
+- **Dark mode is true charcoal**, not brown: `#1E1E1E` background, `#464646`/`#595958` cards,
+  `#FAF8F5` text — matches the v2 spec exactly. The old dark mode (`#17110e` background, sepia
+  brand scale) is gone. Icon/link accents (`brand-700/800`) also shift to neutral grays in dark
+  mode rather than staying brown, so no surface anywhere reads as brown-tinted.
+- **Calm mode** uses the cream background with the periwinkle/blue-gray accent system
+  (`#DDE8EB` cards, `#9F9EE5` accent, `#52506F` text) from `src/styles/sanad-colors-v2.css` — one
+  accent hue, not a rainbow of pastels.
+- **Splash screen rebuilt**: layered blurred radial gradients (the five splash tones from the v2
+  palette) with a bright center and the real logo, replacing the old flat linear-gradient +
+  drawn-icon splash. Respects `prefers-reduced-motion`.
+- **Auth screens rebuilt**: warm blurred top section + a near-white sheet with large rounded top
+  corners overlapping it, matching the Figma structure, instead of a flat centered card. Added the
+  Face ID prototype action (honestly disabled, matching the existing Google/Apple/Nafath pattern).
+- **Home dashboard rebuilt** around the actual SANAD dashboard structure instead of three generic
+  Hear/See/Speak cards: profile header with Aura shortcut and notifications, date/time card,
+  Start Captioning / Text To Speech primary actions, noise filtering control, four quick-phrase
+  shortcuts, a prominent Emergency SOS section, then the existing glasses-status card and honest
+  empty-state recent activity below. Hear/See/Speak remain reachable from the Assist tab.
+- **Bottom navigation** trimmed to four destinations (Home, Assist, Settings, Profile — Aura moved
+  into the Home header shortcut and Assist) and restyled as a compact rounded floating pill instead
+  of a full-width Material-style bar.
+- **PWA branding**: manifest and metadata icons now point at the real logo asset; `theme-color`
+  now follows the active theme (cream in light/calm, `#1E1E1E` in dark) via a small effect in
+  `PreferencesProvider`, instead of being hardcoded to brown.
 
-- `localStorage` for preferences and session — implemented and working.
-- Responsive layout via CSS media queries / Tailwind breakpoints — implemented.
-- `prefers-reduced-motion` — respected globally (`src/styles/tokens.css` zeroes animation/transition
-  durations) and specifically on the splash screen pulse.
-- Focus-visible styling — every interactive element has a visible 3px focus ring (verified via
-  automated keyboard-navigation check, not just CSS inspection).
+## Phase 2 — Real Browser Features
 
-No Speech Recognition, SpeechSynthesis, MediaDevices, or Geolocation code exists yet — those are
-Phase 2/3 scope and are not touched in this run.
+- **Text-to-Speech** (`/app/speech`, `src/features/speech/`): real `SpeechSynthesis` via
+  `src/hooks/use-speech-synthesis.ts`. English/Arabic language toggle, large text input, voice
+  list filtered by language, speed and pitch sliders, Speak/Stop/Clear. Handles voice loading, zero
+  voices for a language (falls back to the browser's default voice, clearly labeled), unsupported
+  browsers, empty input, and synthesis errors.
+- **Quick Phrases**: `QuickPhrasesProvider` (`src/components/providers/quick-phrases-provider.tsx`)
+  persists phrases to `localStorage`. Full CRUD (add/edit/delete/favorite) lives in the Speech
+  screen; Home shows the four favorited (or first four) phrases as tap-to-speak shortcuts. Default
+  phrases: "Thank you", "I need help", "Where is the restroom?", "I am lost".
+- **Live Transcription** (`/app/hearing`, `src/features/hearing/`): real
+  `SpeechRecognition`/`webkitSpeechRecognition` via `src/hooks/use-speech-recognition.ts`, with a
+  live waveform indicator, interim + final transcript, Start/Stop/Clear. Handles permission denial,
+  no-speech, and recognition errors. If the API doesn't exist at all, shows an explicit "Demo mode"
+  banner and a scripted, clearly-labeled demo transcript — it never pretends to listen when it
+  isn't.
+- **Emergency SOS** (`/app/emergency`, `src/features/emergency/`): editable emergency message
+  (persisted), trusted contacts with add/edit/delete and a working `tel:` call link, a
+  share-location toggle backed by real `navigator.geolocation`
+  (`src/hooks/use-geolocation.ts`, handling denied/unsupported/error), and a confirm-before-send
+  dialog. Sending is explicitly simulated — clearly labeled before, during, and after — since there
+  is no backend to deliver anything. Demo contacts (Layla Ahmad, Omar Al-Faisal) are fictional, not
+  sourced from the brief's PDF.
+- **Noise filtering** (Home): a real, persisted enable toggle and 0–100 level control
+  (`src/features/home/noise-filter-card.tsx`), explicitly labeled as saving a preference only —
+  real-time audio processing is called out as a future SANAD Glasses hardware integration.
+
+## Real Browser-Supported Features
+
+- `SpeechSynthesis`, `SpeechRecognition`/`webkitSpeechRecognition`, and `navigator.geolocation` —
+  implemented and working where the browser supports them, each with honest unsupported/denied/
+  error states.
+- `localStorage` for preferences, session, quick phrases, and emergency contacts.
+- `prefers-reduced-motion` — respected globally and on the rebuilt splash animation.
 
 ## Mocked / Simulated Features
 
-- Authentication: `src/lib/mock-auth.ts` simulates network latency and returns a fabricated user;
-  there is no backend and no real credential verification. Demo user is a fixed fictional account
-  (`Demo User`, `demo@sanad.app`) — not derived from the source PDF's real user data.
-- Google / Apple / Nafath sign-in: rendered as disabled buttons with an explicit "Prototype
-  integrations — not connected yet" caption.
-- Password reset: simulates a request and shows a confirmation message; no email is sent.
+- Authentication (unchanged from Phase 1): simulated latency, no real backend.
+- Google / Apple / Nafath / Face ID sign-in: disabled buttons, explicitly labeled as prototype
+  placeholders.
+- Emergency alert sending: explicitly simulated (see above) — no SMS/notification is ever sent.
+  Calling a contact via the `tel:` link does invoke the device's real phone app.
 
-## Partially Completed Features
+## Missing Backend / AI / Hardware Integrations
 
-- Settings: only the four preference groups tied to Phase 1 state (accessibility needs, language,
-  font size, appearance) are functional; the other nine groups listed in the brief are present as
-  labeled, non-interactive "Phase 4" rows.
-- Arabic/RTL: the language switch flips `<html lang>` and `dir` and the whole app is built on
-  logical, direction-aware primitives (Tailwind + flex/grid), but no Arabic copy exists yet — only
-  the language toggle itself is bilingual. Full RTL visual QA and Arabic strings are Phase 4 work.
-- PWA icons: SVG only (valid per the manifest spec, works in modern Chromium/Firefox/Safari) — no
-  raster PNG/ICO icon set, see Limitations.
-
-## Missing Backend Integrations
-
-- No backend exists at all. Every "account created", "message sent", "contact saved" concept is
-  local-only, per the brief's Phase 1 scope.
-
-## Missing AI Integrations
-
-- Aura, live captions, translation, emotion/urgency detection, object detection, and OCR are not
-  implemented — Phase 2/3 scope. Their routes exist only as labeled stubs.
-
-## Missing Hardware Integrations
-
-- No camera, microphone, geolocation, or Bluetooth code exists yet. The Smart Glasses screen is a
-  stub; no Web Bluetooth or WebSocket scaffolding has been added yet (planned for Phase 3 per
-  `SANAD_IMPLEMENTATION_PLAN.md`).
-
-## Browser Limitations Encountered This Run
-
-- No `poppler-utils`/`pdftoppm` or Python installed in this environment, so the source PDF could
-  not be rendered to images for pixel-level Figma comparison; a Node.js `pdf-parse` script was
-  used instead to extract screen text/terminology, which is why layouts are hand-designed rather
-  than pixel-matched to the Figma export.
-- No image-generation tooling (ImageMagick, Sharp, Pillow) was available to produce raster PWA
-  icons — only an SVG icon ships in Phase 1.
-
-## Recommended Next Steps (Phase 2)
-
-1. Text-to-speech (`SpeechSynthesis`) and quick phrases on `/app/speech`.
-2. Live captions (`SpeechRecognition`) with permission and unsupported-browser states on
-   `/app/hearing`.
-3. Emergency SOS: trusted contacts, `Geolocation`, and simulated (clearly labeled) alert sending on
-   `/app/emergency`.
-4. Real PNG/ICO icon set once image tooling or a supplied brand asset is available.
-5. Arabic copy + RTL visual QA pass.
+Unchanged from Phase 1: no backend exists; Aura, translation, object detection/OCR, and Bluetooth
+glasses pairing remain labeled stubs for later phases.
 
 ## Verification Performed This Run
 
-- `npm run lint` — clean (0 errors, 0 warnings).
 - `npx tsc --noEmit` — clean.
+- `npm run lint` — clean (0 errors, 0 warnings).
 - `npm run build` — succeeds; all 17 routes prerender as static content.
-- Manual browser verification via a headless Playwright script (dev server) covering:
-  - Mobile (390px) and desktop (1280px) at `/welcome`, `/auth/sign-in`,
-    `/onboarding/accessibility`, `/onboarding/personalize`, `/app/home`.
-  - 320px and 768px breakpoints.
-  - Bottom nav visible on mobile / hidden on desktop, sidebar hidden on mobile / visible on
-    desktop — confirmed both ways.
-  - Dark mode toggle from Settings, re-verified on the home dashboard.
-  - Keyboard-only Tab navigation confirmed a visible 3px focus ring on form controls.
-  - Browser console checked for errors on every navigated page — none found.
-- One real layout bug was found and fixed during this pass: the welcome screen's call-to-action
-  buttons stretched full-width on desktop instead of staying phone-width and centered; fixed by
-  constraining that section to `max-w-sm` (matching the pattern already used on the auth screens).
+- Manual Playwright-driven screenshot review at 390px width covering: splash, welcome, sign-in,
+  home (light/dark/calm), settings, profile, assist, speech, live transcription, and emergency SOS.
+  Verified per-screen against the brief's checklist (real logo visible, light mode reads
+  cream/beige not brown, dark mode reads charcoal not brown, calm mode reads periwinkle/blue-gray,
+  Figma-recognizable structure on home/auth/splash).
+- Confirmed the bottom nav's fixed positioning does not overlap page content in real scrolled
+  viewport use (a `fullPage` screenshot mode artifact was investigated and ruled out as a real bug).
+
+## Known Limitations
+
+- The PWA manifest icon uses the real logo PNG directly (`461×308`, not square) since no square
+  icon crop was supplied and no image-editing direction was given beyond "derive from the real
+  asset" — browsers will center/crop it on install. A dedicated square icon export from Figma would
+  be a clean follow-up.
+- No Arabic UI copy yet (Phase 4 scope, per the original plan) — the language and RTL plumbing
+  (`<html lang>`/`dir`) works, and the Text-to-Speech screen exercises Arabic voice playback, but
+  interface strings are still English-only.
+- This session temporarily installed `playwright` and `sharp` with `npm install --no-save` for
+  screenshot QA and the one-time logo background removal. Neither was added to `package.json` or
+  `package-lock.json` (verified via `git diff`), but they remain in your local `node_modules` until
+  your next clean `npm install`.

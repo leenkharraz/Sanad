@@ -2,11 +2,14 @@
 
 import { PreferencesProvider } from "@/components/providers/preferences-provider";
 import { SessionProvider } from "@/components/providers/session-provider";
+import { QuickPhrasesProvider } from "@/components/providers/quick-phrases-provider";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <PreferencesProvider>
-      <SessionProvider>{children}</SessionProvider>
+      <SessionProvider>
+        <QuickPhrasesProvider>{children}</QuickPhrasesProvider>
+      </SessionProvider>
     </PreferencesProvider>
   );
 }

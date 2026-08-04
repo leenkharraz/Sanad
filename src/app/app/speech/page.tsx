@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
-import { MessageCircle } from "lucide-react";
-import { PhaseStub } from "@/components/feedback/phase-stub";
+import { SpeechScreen } from "@/features/speech/speech-screen";
 
-export const metadata: Metadata = { title: "Speech Assistance — SANAD" };
+export const metadata: Metadata = { title: "Text To Speech — SANAD" };
 
 export default function SpeechPage() {
-  return (
-    <div className="pt-4">
-      <PhaseStub
-        icon={MessageCircle}
-        title="Speech Assistance"
-        description="Text-to-speech, voice selection, and quick phrases will appear here."
-        phase="Phase 2"
-      />
-    </div>
-  );
+  return <SpeechScreen />;
 }
