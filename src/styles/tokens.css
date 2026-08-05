@@ -240,6 +240,31 @@ html {
   font-size: calc(16px * var(--font-scale));
 }
 
+/*
+  Arabic text renders correctly (right-reading, right-aligned) WITHOUT
+  mirroring the app's structural layout. The document stays dir="ltr"
+  always (see PreferencesProvider) — sidebar, bottom nav, header buttons,
+  card grids, and icon positions are identical in both languages.
+
+  Only genuine text-bearing tags get this treatment:
+  - unicode-bidi: plaintext lets each element resolve its own reading
+    direction from its own content (Arabic text reads as Arabic, an email
+    or phone number embedded elsewhere stays LTR) — this NEVER affects
+    flex/grid item order, only inline text shaping, so a flex row like
+    "<button><Icon/><span>{t(...)}</span></button>" keeps the icon and
+    label in the exact same physical position in both languages.
+  - text-align: right is a physical property (unlike the logical
+    start/end) — it only visibly shifts text within a leaf element that
+    has left-over inline space (headings, paragraphs, full-width buttons);
+    it's a no-op for tags used purely as flex containers.
+  Deliberately excludes div/nav/header/ul (structural/layout tags).
+*/
+html[lang="ar"]
+  :where(h1, h2, h3, h4, h5, h6, p, span, a, button, label, li, legend, figcaption, td, th, option) {
+  unicode-bidi: plaintext;
+  text-align: right;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

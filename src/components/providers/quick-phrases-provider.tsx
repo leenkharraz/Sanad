@@ -6,10 +6,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { DEFAULT_QUICK_PHRASES, type QuickPhrase } from "@/types/quick-phrase";
-import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
+import { STORAGE_KEYS, readStorage, writeStorage, scopedKey, GUEST_SCOPE } from "@/lib/storage";
+import { useSession } from "@/components/providers/session-provider";
 
 interface QuickPhrasesContextValue {
   phrases: QuickPhrase[];
@@ -27,22 +29,29 @@ function createId() {
 }
 
 export function QuickPhrasesProvider({ children }: { children: React.ReactNode }) {
+  const { session, isLoaded: sessionLoaded } = useSession();
+  const scope = session?.user.id ?? GUEST_SCOPE;
   const [phrases, setPhrases] = useState<QuickPhrase[]>(DEFAULT_QUICK_PHRASES);
   const [isLoaded, setIsLoaded] = useState(false);
+  const hydratedScopeRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const stored = readStorage<QuickPhrase[]>(STORAGE_KEYS.quickPhrases);
-    if (stored && stored.length > 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPhrases(stored);
-    }
+    // Per-account, like preferences — this screen is only reachable signed
+    // in, so there's no guest-seeding concern here, just isolation between
+    // accounts (switching users must never show the previous user's phrases).
+    if (!sessionLoaded) return;
+    if (hydratedScopeRef.current === scope) return;
+    hydratedScopeRef.current = scope;
+
+    const stored = readStorage<QuickPhrase[]>(scopedKey(STORAGE_KEYS.quickPhrases, scope));
+    setPhrases(stored && stored.length > 0 ? stored : DEFAULT_QUICK_PHRASES);
     setIsLoaded(true);
-  }, []);
+  }, [scope, sessionLoaded]);
 
   useEffect(() => {
     if (!isLoaded) return;
-    writeStorage(STORAGE_KEYS.quickPhrases, phrases);
-  }, [phrases, isLoaded]);
+    writeStorage(scopedKey(STORAGE_KEYS.quickPhrases, scope), phrases);
+  }, [phrases, isLoaded, scope]);
 
   const addPhrase = useCallback((text: string) => {
     const trimmed = text.trim();

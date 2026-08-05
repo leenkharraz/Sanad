@@ -16,7 +16,7 @@ export function ScreenHeader({ title, backHref }: { title: string; backHref?: st
         aria-label={t("common.goBack")}
         className="flex size-11 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-soft hover:text-text-primary"
       >
-        <ChevronLeft aria-hidden="true" className="size-5 rtl:-scale-x-100" />
+        <ChevronLeft aria-hidden="true" className="size-5" />
       </button>
       <h1 className="text-xl font-semibold tracking-tight text-text-primary">{title}</h1>
     </div>

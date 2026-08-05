@@ -19,7 +19,7 @@ export function EmergencySection() {
         <p className="font-semibold">{t("home.emergency.title")}</p>
         <p className="text-xs text-danger/80">{t("home.emergency.subtitle")}</p>
       </div>
-      <ChevronRight aria-hidden="true" className="size-5 shrink-0 rtl:-scale-x-100" />
+      <ChevronRight aria-hidden="true" className="size-5 shrink-0" />
     </Link>
   );
 }

@@ -74,8 +74,8 @@ export const ar: Translations = {
       subtitle: "أدخل بريدك الإلكتروني وسنرسل رابط إعادة التعيين.",
       submit: "إرسال رابط إعادة التعيين",
       backToSignIn: "العودة لتسجيل الدخول",
-      successPrefix: "إذا كان هناك حساب مرتبط بـ",
-      successSuffix: "، فسيصلك رابط إعادة التعيين. هذه نسخة تجريبية — لم يُرسل أي بريد إلكتروني حقيقي.",
+      unavailableNotice:
+        "استعادة كلمة المرور غير متاحة بعد في هذه النسخة التجريبية — لا توجد خدمة بريد إلكتروني خلفها. سجّل الدخول بكلمة مرورك الحالية، أو أنشئ حسابًا جديدًا.",
     },
     validation: {
       emailRequired: "البريد الإلكتروني مطلوب.",
@@ -87,8 +87,7 @@ export const ar: Translations = {
       confirmPasswordRequired: "أكّد كلمة المرور.",
       passwordsDoNotMatch: "كلمتا المرور غير متطابقتين.",
       incorrectCredentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-      couldNotCreateAccount: "تعذّر إنشاء الحساب.",
-      enterEmailFirst: "أدخل بريدًا إلكترونيًا أولًا.",
+      duplicateAccount: "يوجد حساب مسجَّل بهذا البريد الإلكتروني بالفعل. جرّب تسجيل الدخول بدلًا من ذلك.",
       genericError: "حدث خطأ ما.",
     },
   },
@@ -360,8 +359,21 @@ export const ar: Translations = {
   profile: {
     title: "الملف الشخصي",
     demoAccount: "حساب تجريبي",
-    privacyNotice: "لا تُجمع بعد بيانات شخصية مثل العمر أو الحساسية أو جهات اتصال الطوارئ — ستتوفر شاشة الملف الشخصي الكاملة في تحديث لاحق، وتُخزَّن محليًا دون نموذج أمان جاهز للإنتاج.",
+    edit: "تعديل",
+    personalInfoTitle: "المعلومات الشخصية والطبية",
+    accessibilityNeedsTitle: "احتياجات إمكانية الوصول",
+    noAccessibilityNeeds: "لم يتم تحديد أي شيء بعد — اختَرها أثناء الإعداد الأولي أو من الإعدادات.",
+    privacyNotice: "المعلومات الشخصية التي تضيفها هنا تُخزَّن على هذا الجهاز فقط — لا يوجد خادم خلفي أو نموذج أمان جاهز للإنتاج بعد.",
     managePreferences: "إدارة التفضيلات من الإعدادات",
+    fields: {
+      dateOfBirth: "تاريخ الميلاد",
+      height: "الطول",
+      bloodType: "فصيلة الدم",
+      bloodTypePlaceholder: "اختر فصيلة الدم",
+      allergies: "الحساسية",
+      emergencyNote: "ملاحظة طبية للطوارئ",
+      notSet: "غير محدد",
+    },
   },
 
   stubs: {

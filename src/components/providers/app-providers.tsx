@@ -6,10 +6,10 @@ import { QuickPhrasesProvider } from "@/components/providers/quick-phrases-provi
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
-    <PreferencesProvider>
-      <SessionProvider>
+    <SessionProvider>
+      <PreferencesProvider>
         <QuickPhrasesProvider>{children}</QuickPhrasesProvider>
-      </SessionProvider>
-    </PreferencesProvider>
+      </PreferencesProvider>
+    </SessionProvider>
   );
 }

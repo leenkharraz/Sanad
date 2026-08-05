@@ -85,7 +85,7 @@ export default function SettingsPage() {
           >
             <Glasses aria-hidden="true" className="size-5 text-brand-700" />
             <span className="flex-1 text-sm font-medium text-text-primary">{t("settings.smartGlasses")}</span>
-            <ChevronRight aria-hidden="true" className="size-4 text-text-muted rtl:-scale-x-100" />
+            <ChevronRight aria-hidden="true" className="size-4 text-text-muted" />
           </Link>
           <Link
             href="/app/emergency"
@@ -93,7 +93,7 @@ export default function SettingsPage() {
           >
             <TriangleAlert aria-hidden="true" className="size-5 text-danger" />
             <span className="flex-1 text-sm font-medium text-text-primary">{t("settings.emergency")}</span>
-            <ChevronRight aria-hidden="true" className="size-4 text-text-muted rtl:-scale-x-100" />
+            <ChevronRight aria-hidden="true" className="size-4 text-text-muted" />
           </Link>
         </div>
       </section>

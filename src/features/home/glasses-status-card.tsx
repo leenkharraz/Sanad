@@ -22,7 +22,7 @@ export function GlassesStatusCard() {
           {t("common.notConnected")}
         </p>
       </div>
-      <ChevronRight aria-hidden="true" className="size-5 shrink-0 text-text-muted rtl:-scale-x-100" />
+      <ChevronRight aria-hidden="true" className="size-5 shrink-0 text-text-muted" />
     </Link>
   );
 }

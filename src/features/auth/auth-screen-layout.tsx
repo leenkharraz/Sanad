@@ -34,7 +34,7 @@ export function AuthScreenLayout({
             aria-label={t("common.goBack")}
             className="flex size-11 items-center justify-center rounded-full text-text-secondary hover:bg-surface/60 hover:text-text-primary"
           >
-            <ChevronLeft aria-hidden="true" className="size-5 rtl:-scale-x-100" />
+            <ChevronLeft aria-hidden="true" className="size-5" />
           </Link>
         </div>
 

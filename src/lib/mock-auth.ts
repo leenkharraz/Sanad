@@ -1,4 +1,5 @@
 import type { SanadUser } from "@/types/user";
+import { createAccount, verifyAccount } from "@/lib/accounts-store";
 
 const SIMULATED_LATENCY_MS = 700;
 
@@ -6,42 +7,22 @@ function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function nameFromEmail(email: string): string {
-  const localPart = email.split("@")[0] ?? "SANAD User";
-  return localPart
-    .replace(/[._-]+/g, " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
 /**
- * There is no backend yet. This simulates the latency and shape of a real
- * auth call so the UI's loading/error states are exercised honestly, while
- * never claiming credentials are verified anywhere but in the browser.
+ * There is no backend server — but this now actually creates and verifies
+ * accounts against `src/lib/accounts-store.ts` (persisted in localStorage,
+ * password hashed+salted via Web Crypto). It's a real client-side "database"
+ * for a prototype, not a fake always-succeed check. `delay()` just keeps the
+ * UI's loading state honestly exercised, matching how a real network call
+ * would feel.
  */
 export async function mockSignIn(email: string, password: string): Promise<SanadUser> {
   await delay(SIMULATED_LATENCY_MS);
-  if (password.length < 8) {
-    throw new Error("INCORRECT_CREDENTIALS");
-  }
-  return {
-    id: `local-${email}`,
-    name: nameFromEmail(email),
-    email,
-    isDemo: false,
-  };
+  return verifyAccount(email, password);
 }
 
 export async function mockSignUp(name: string, email: string, password: string): Promise<SanadUser> {
   await delay(SIMULATED_LATENCY_MS);
-  if (password.length < 8) {
-    throw new Error("COULD_NOT_CREATE_ACCOUNT");
-  }
-  return {
-    id: `local-${email}`,
-    name,
-    email,
-    isDemo: false,
-  };
+  return createAccount(name, email, password);
 }
 
 export const DEMO_USER: SanadUser = {
@@ -50,10 +31,3 @@ export const DEMO_USER: SanadUser = {
   email: "demo@sanad.app",
   isDemo: true,
 };
-
-export async function mockRequestPasswordReset(email: string): Promise<void> {
-  await delay(SIMULATED_LATENCY_MS);
-  if (!email) {
-    throw new Error("ENTER_EMAIL_FIRST");
-  }
-}

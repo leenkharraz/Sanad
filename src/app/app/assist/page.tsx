@@ -55,7 +55,7 @@ export default function AssistPage() {
           <p className="font-semibold">{t("assist.auraTitle")}</p>
           <p className="text-xs opacity-80">{t("assist.auraSubtitle")}</p>
         </div>
-        <ChevronRight aria-hidden="true" className="size-5 shrink-0 rtl:-scale-x-100" />
+        <ChevronRight aria-hidden="true" className="size-5 shrink-0" />
       </Link>
 
       <div className="space-y-2.5">
@@ -72,7 +72,7 @@ export default function AssistPage() {
               <p className="font-medium text-text-primary">{t(titleKey)}</p>
               <p className="truncate text-xs text-text-muted">{t(descriptionKey)}</p>
             </div>
-            <ChevronRight aria-hidden="true" className="size-5 shrink-0 text-text-muted rtl:-scale-x-100" />
+            <ChevronRight aria-hidden="true" className="size-5 shrink-0 text-text-muted" />
           </Link>
         ))}
       </div>

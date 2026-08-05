@@ -31,7 +31,12 @@ function interpolate(value: string, vars?: Record<string, string | number>): str
 /**
  * The single translation source of truth for the app. Reads the user's
  * saved language preference (PreferencesProvider) — never guesses from the
- * browser — and returns a `t()` lookup plus the current lang/dir.
+ * browser — and returns a `t()` lookup plus the current lang.
+ *
+ * Deliberately does NOT expose a `dir` value: the app's structural layout
+ * stays dir="ltr" in both languages (see PreferencesProvider and
+ * tokens.css) — there is no per-component "which way should this flex
+ * container face" decision to make here.
  */
 export function useTranslation() {
   const { preferences } = usePreferences();
@@ -60,8 +65,5 @@ export function useTranslation() {
     [dict]
   );
 
-  return useMemo(
-    () => ({ t, tList, lang, dir: lang === "ar" ? ("rtl" as const) : ("ltr" as const) }),
-    [t, tList, lang]
-  );
+  return useMemo(() => ({ t, tList, lang }), [t, tList, lang]);
 }

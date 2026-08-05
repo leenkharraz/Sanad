@@ -1,33 +1,37 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_EMERGENCY_CONTACTS, type EmergencyContact } from "@/types/emergency";
-import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
-
-function createId() {
-  return `ec-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
-}
+import { STORAGE_KEYS, readStorage, writeStorage, scopedKey, GUEST_SCOPE } from "@/lib/storage";
+import { useSession } from "@/components/providers/session-provider";
 
 export function useEmergencyContacts() {
+  const { session, isLoaded: sessionLoaded } = useSession();
+  const scope = session?.user.id ?? GUEST_SCOPE;
   const [contacts, setContacts] = useState<EmergencyContact[]>(DEFAULT_EMERGENCY_CONTACTS);
   const [isLoaded, setIsLoaded] = useState(false);
+  const hydratedScopeRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const stored = readStorage<EmergencyContact[]>(STORAGE_KEYS.emergencyContacts);
-    if (stored && stored.length > 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setContacts(stored);
-    }
+    // Per-account — this screen is only reachable signed in, so this is
+    // purely about isolation: switching accounts must never show the
+    // previous user's trusted contacts.
+    if (!sessionLoaded) return;
+    if (hydratedScopeRef.current === scope) return;
+    hydratedScopeRef.current = scope;
+
+    const stored = readStorage<EmergencyContact[]>(scopedKey(STORAGE_KEYS.emergencyContacts, scope));
+    setContacts(stored && stored.length > 0 ? stored : DEFAULT_EMERGENCY_CONTACTS);
     setIsLoaded(true);
-  }, []);
+  }, [scope, sessionLoaded]);
 
   useEffect(() => {
     if (!isLoaded) return;
-    writeStorage(STORAGE_KEYS.emergencyContacts, contacts);
-  }, [contacts, isLoaded]);
+    writeStorage(scopedKey(STORAGE_KEYS.emergencyContacts, scope), contacts);
+  }, [contacts, isLoaded, scope]);
 
   const addContact = useCallback((name: string, relationship: string, phone: string) => {
-    setContacts((prev) => [...prev, { id: createId(), name, relationship, phone }]);
+    setContacts((prev) => [...prev, { id: `ec-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`, name, relationship, phone }]);
   }, []);
 
   const updateContact = useCallback(

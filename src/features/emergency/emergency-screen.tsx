@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapPin, TriangleAlert, CheckCircle2 } from "lucide-react";
 import { ScreenHeader } from "@/components/navigation/screen-header";
 import { Label } from "@/components/ui/label";
@@ -17,7 +17,8 @@ import {
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useEmergencyContacts } from "@/features/emergency/use-emergency-contacts";
 import { EmergencyContactsList } from "@/features/emergency/emergency-contacts-list";
-import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
+import { STORAGE_KEYS, readStorage, writeStorage, scopedKey, GUEST_SCOPE } from "@/lib/storage";
+import { useSession } from "@/components/providers/session-provider";
 import { useTranslation } from "@/i18n/use-translation";
 import { DEFAULT_EMERGENCY_MESSAGE_TEXT } from "@/i18n/localized-defaults";
 
@@ -32,26 +33,36 @@ const GEO_ERROR_KEYS = {
 export function EmergencyScreen() {
   const { contacts, addContact, updateContact, deleteContact } = useEmergencyContacts();
   const { status: geoStatus, coords, error: geoError, request: requestLocation } = useGeolocation();
+  const { session, isLoaded: sessionLoaded } = useSession();
   const { t, lang } = useTranslation();
+  const scope = session?.user.id ?? GUEST_SCOPE;
   // Seeded from the current UI language, but only ever used until a real
   // (possibly untouched-default) value is found in storage — see the effect
-  // below. Once anything is saved, it's the user's content and a later
+  // below. Once anything is saved, it's that account's content and a later
   // language switch must never overwrite it.
   const [message, setMessage] = useState(() => DEFAULT_EMERGENCY_MESSAGE_TEXT[lang]);
   const [shareLocation, setShareLocation] = useState(true);
   const [sendState, setSendState] = useState<SendState>("idle");
+  const hydratedScopeRef = useRef<string | null>(null);
+  const [messageLoaded, setMessageLoaded] = useState(false);
 
   useEffect(() => {
-    const stored = readStorage<string>(STORAGE_KEYS.emergencyMessage);
-    if (stored) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setMessage(stored);
-    }
-  }, []);
+    // Per-account, like trusted contacts — switching accounts must never
+    // show the previous user's emergency message.
+    if (!sessionLoaded) return;
+    if (hydratedScopeRef.current === scope) return;
+    hydratedScopeRef.current = scope;
+
+    const stored = readStorage<string>(scopedKey(STORAGE_KEYS.emergencyMessage, scope));
+    setMessage(stored ?? DEFAULT_EMERGENCY_MESSAGE_TEXT[lang]);
+    setMessageLoaded(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scope, sessionLoaded]);
 
   useEffect(() => {
-    writeStorage(STORAGE_KEYS.emergencyMessage, message);
-  }, [message]);
+    if (!messageLoaded) return;
+    writeStorage(scopedKey(STORAGE_KEYS.emergencyMessage, scope), message);
+  }, [message, messageLoaded, scope]);
 
   function handleSend() {
     setSendState("sending");

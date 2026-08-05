@@ -16,6 +16,7 @@ interface SessionContextValue {
   isLoaded: boolean;
   signIn: (user: SanadUser) => void;
   signOut: () => void;
+  updateUser: (patch: Partial<Omit<SanadUser, "id" | "isDemo">>) => void;
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -42,9 +43,22 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     clearStorage(STORAGE_KEYS.session);
   }, []);
 
+  /** Updates the currently signed-in user's cached identity (e.g. a profile
+   * name edit) so the whole app reflects it immediately, without requiring
+   * a re-login. Callers are responsible for also syncing the persisted
+   * account record (see accounts-store.ts) for real (non-demo) accounts. */
+  const updateUser = useCallback((patch: Partial<Omit<SanadUser, "id" | "isDemo">>) => {
+    setSession((prev) => {
+      if (!prev) return prev;
+      const next: AuthSession = { ...prev, user: { ...prev.user, ...patch } };
+      writeStorage(STORAGE_KEYS.session, next);
+      return next;
+    });
+  }, []);
+
   const value = useMemo(
-    () => ({ session, isLoaded, signIn, signOut }),
-    [session, isLoaded, signIn, signOut]
+    () => ({ session, isLoaded, signIn, signOut, updateUser }),
+    [session, isLoaded, signIn, signOut, updateUser]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

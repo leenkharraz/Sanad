@@ -73,8 +73,8 @@ export const en = {
       subtitle: "Enter your email and we'll send a reset link.",
       submit: "Send reset link",
       backToSignIn: "Back to sign in",
-      successPrefix: "If an account exists for",
-      successSuffix: ", a reset link has been sent. This is a prototype — no real email is sent.",
+      unavailableNotice:
+        "Password recovery isn't available in this prototype yet — there's no email service behind it. Sign in with your existing password, or create a new account.",
     },
     validation: {
       emailRequired: "Email is required.",
@@ -86,8 +86,7 @@ export const en = {
       confirmPasswordRequired: "Confirm your password.",
       passwordsDoNotMatch: "Passwords do not match.",
       incorrectCredentials: "Incorrect email or password.",
-      couldNotCreateAccount: "Could not create account.",
-      enterEmailFirst: "Enter an email address first.",
+      duplicateAccount: "An account already exists with this email. Try signing in instead.",
       genericError: "Something went wrong.",
     },
   },
@@ -366,9 +365,22 @@ export const en = {
   profile: {
     title: "Profile",
     demoAccount: "Demo account",
+    edit: "Edit",
+    personalInfoTitle: "Personal & medical info",
+    accessibilityNeedsTitle: "Accessibility needs",
+    noAccessibilityNeeds: "None selected yet — choose them during onboarding or in Settings.",
     privacyNotice:
-      "Personal details such as age, allergies, and emergency contacts are not collected yet — that full profile screen ships in a future update, stored locally with no production security model.",
+      "Personal details you add here are stored only on this device — there is no backend or production security model yet.",
     managePreferences: "Manage preferences in Settings",
+    fields: {
+      dateOfBirth: "Date of birth",
+      height: "Height",
+      bloodType: "Blood type",
+      bloodTypePlaceholder: "Select blood type",
+      allergies: "Allergies",
+      emergencyNote: "Emergency medical note",
+      notSet: "Not set",
+    },
   },
 
   stubs: {

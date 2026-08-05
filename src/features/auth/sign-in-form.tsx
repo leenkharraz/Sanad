@@ -16,13 +16,13 @@ import { createSignInSchema, type SignInValues } from "@/features/auth/schemas";
 import { authErrorKey } from "@/features/auth/auth-error";
 import { mockSignIn } from "@/lib/mock-auth";
 import { useSession } from "@/components/providers/session-provider";
-import { usePreferences } from "@/components/providers/preferences-provider";
+import { STORAGE_KEYS, readStorage, scopedKey } from "@/lib/storage";
+import { DEFAULT_PREFERENCES, type UserPreferences } from "@/types/preferences";
 import { useTranslation } from "@/i18n/use-translation";
 
 export function SignInForm() {
   const router = useRouter();
   const { signIn } = useSession();
-  const { preferences } = usePreferences();
   const { t } = useTranslation();
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -45,9 +45,16 @@ export function SignInForm() {
     try {
       const user = await mockSignIn(values.email, values.password);
       signIn(user);
-      if (!preferences.onboardingComplete) {
+      // Read this account's own saved preferences directly from storage
+      // rather than the (still-stale, pre-switch) PreferencesProvider
+      // context value — that context only re-hydrates for the new user
+      // on the next render, which is too late for this redirect decision.
+      const stored = readStorage<UserPreferences>(scopedKey(STORAGE_KEYS.preferences, user.id));
+      const onboardingComplete = stored?.onboardingComplete ?? DEFAULT_PREFERENCES.onboardingComplete;
+      const personalizationComplete = stored?.personalizationComplete ?? DEFAULT_PREFERENCES.personalizationComplete;
+      if (!onboardingComplete) {
         router.push("/onboarding/accessibility");
-      } else if (!preferences.personalizationComplete) {
+      } else if (!personalizationComplete) {
         router.push("/onboarding/personalize");
       } else {
         router.push("/app/home");

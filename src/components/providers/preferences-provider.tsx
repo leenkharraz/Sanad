@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -13,7 +14,8 @@ import {
   type AccessibilityNeed,
   type UserPreferences,
 } from "@/types/preferences";
-import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
+import { STORAGE_KEYS, readStorage, writeStorage, scopedKey, GUEST_SCOPE } from "@/lib/storage";
+import { useSession } from "@/components/providers/session-provider";
 
 interface PreferencesContextValue {
   preferences: UserPreferences;
@@ -26,26 +28,39 @@ interface PreferencesContextValue {
 const PreferencesContext = createContext<PreferencesContextValue | null>(null);
 
 export function PreferencesProvider({ children }: { children: React.ReactNode }) {
+  const { session, isLoaded: sessionLoaded } = useSession();
+  const scope = session?.user.id ?? GUEST_SCOPE;
   const [preferences, setPreferences] = useState<UserPreferences>(DEFAULT_PREFERENCES);
   const [isLoaded, setIsLoaded] = useState(false);
+  const hydratedScopeRef = useRef<string | null>(null);
 
   useEffect(() => {
-    // One-time hydration from localStorage, which does not exist during SSR.
-    // This intentionally runs once on mount, not in response to state/props,
-    // so it is not the render-cascade pattern react-hooks/set-state-in-effect
-    // warns about.
-    const stored = readStorage<UserPreferences>(STORAGE_KEYS.preferences);
+    // Waits for the session to resolve first, then loads THAT scope's own
+    // preferences (per-account, so switching accounts never leaks one
+    // user's theme/language/onboarding-state into another's). A brand-new
+    // account with no saved preferences yet starts from whatever was active
+    // as a guest (e.g. language picked pre-auth) instead of hard-resetting.
+    if (!sessionLoaded) return;
+    if (hydratedScopeRef.current === scope) return;
+    hydratedScopeRef.current = scope;
+
+    const stored = readStorage<UserPreferences>(scopedKey(STORAGE_KEYS.preferences, scope));
     if (stored) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreferences({ ...DEFAULT_PREFERENCES, ...stored });
+    } else if (scope !== GUEST_SCOPE) {
+      const guest = readStorage<UserPreferences>(scopedKey(STORAGE_KEYS.preferences, GUEST_SCOPE));
+      setPreferences(guest ? { ...DEFAULT_PREFERENCES, ...guest } : DEFAULT_PREFERENCES);
+    } else {
+      setPreferences(DEFAULT_PREFERENCES);
     }
     setIsLoaded(true);
-  }, []);
+  }, [scope, sessionLoaded]);
 
   useEffect(() => {
     if (!isLoaded) return;
-    writeStorage(STORAGE_KEYS.preferences, preferences);
-  }, [preferences, isLoaded]);
+    writeStorage(scopedKey(STORAGE_KEYS.preferences, scope), preferences);
+  }, [preferences, isLoaded, scope]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -53,7 +68,10 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     root.classList.toggle("calm", preferences.themeMode === "calm");
     root.dataset.fontSize = preferences.fontSize;
     root.lang = preferences.language;
-    root.dir = preferences.language === "ar" ? "rtl" : "ltr";
+    // The app's structural layout (nav, sidebar, cards, headers) stays LTR
+    // in both languages — only text content renders RTL where Arabic
+    // content calls for it (see globals.css). Never toggle this to "rtl".
+    root.dir = "ltr";
 
     const themeColor = preferences.themeMode === "dark" ? "#1B1B1B" : "#FAF7F0";
     document
