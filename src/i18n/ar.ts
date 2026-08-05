@@ -10,7 +10,6 @@ export const ar: Translations = {
     done: "تم",
     close: "إغلاق",
     goBack: "رجوع",
-    comingSoon: "قريبًا",
     loadingSanad: "جارٍ تحميل سند",
     notConnected: "غير متصلة",
     comingInFutureUpdate: "قادمة في تحديث لاحق — غير متاحة بعد",
@@ -437,7 +436,6 @@ export const ar: Translations = {
       genderUnknown: "صوت",
       loadingVoices: "جارٍ تحميل الأصوات…",
       noVoicesFound: "لم يُعثر على أي أصوات على هذا الجهاز — ستستخدم معاينة الصوت الصوت الافتراضي لمتصفحك.",
-      savedNotice: "تم حفظ إعدادات الصوت.",
     },
     translation: {
       from: "من",
@@ -446,7 +444,6 @@ export const ar: Translations = {
       arabic: "العربية",
       helperNote:
         "يحدد هذا زوج اللغات لميزة الترجمة فقط. تغيير لغة واجهة سند أعلاه لن يغيّر هذا، وتغيير هذا لن يغيّر لغة الواجهة.",
-      savedNotice: "تم حفظ زوج لغات الترجمة.",
     },
     visionAssistance: {
       hardwareNotice:
@@ -473,7 +470,6 @@ export const ar: Translations = {
       emergencyContactsHint: "عرض جهات الاتصال الموثوقة أو تعديلها.",
       profileInformation: "معلومات الملف الشخصي",
       profileInformationHint: "عرض معلوماتك الشخصية والطبية أو تعديلها.",
-      manage: "إدارة",
       status: {
         granted: "مسموح",
         denied: "محظور",

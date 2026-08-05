@@ -8,7 +8,6 @@ export const en = {
     done: "Done",
     close: "Close",
     goBack: "Go back",
-    comingSoon: "Coming soon",
     loadingSanad: "Loading SANAD",
     notConnected: "Not connected",
     comingInFutureUpdate: "Coming in a future update — not implemented yet",
@@ -444,7 +443,6 @@ export const en = {
       genderUnknown: "Voice",
       loadingVoices: "Loading voices…",
       noVoicesFound: "No voices were found on this device — Preview Voice will fall back to your browser's default voice.",
-      savedNotice: "Voice settings saved.",
     },
     translation: {
       from: "From",
@@ -453,7 +451,6 @@ export const en = {
       arabic: "Arabic",
       helperNote:
         "This sets the language pair for the Translation feature only. Changing the SANAD interface language above will not change this, and changing this will not change the interface language.",
-      savedNotice: "Translation language pair saved.",
     },
     visionAssistance: {
       hardwareNotice:
@@ -480,7 +477,6 @@ export const en = {
       emergencyContactsHint: "View or edit your trusted contacts.",
       profileInformation: "Profile Information",
       profileInformationHint: "View or edit your personal and medical info.",
-      manage: "Manage",
       status: {
         granted: "Allowed",
         denied: "Blocked",
