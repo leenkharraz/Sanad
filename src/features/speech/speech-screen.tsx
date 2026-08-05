@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useSpeechSynthesis } from "@/hooks/use-speech-synthesis";
 import { QuickPhraseEditor } from "@/features/speech/quick-phrase-editor";
+import { usePreferences } from "@/components/providers/preferences-provider";
 import { useTranslation } from "@/i18n/use-translation";
 
 // The TTS *spoken* language is a separate preference from the app's UI
@@ -17,11 +18,15 @@ type SpeechLang = "en" | "ar";
 
 export function SpeechScreen() {
   const { status, voices, error, speak, stop } = useSpeechSynthesis();
+  const { preferences } = usePreferences();
   const { t } = useTranslation();
   const [text, setText] = useState("");
   const [lang, setLang] = useState<SpeechLang>("en");
-  const [voiceURI, setVoiceURI] = useState<string>("");
-  const [rate, setRate] = useState(1);
+  // Seeded once from the default saved in Settings > Voice Settings — this
+  // screen can still override them for the current session without writing
+  // back, so the two screens never fight over which one owns the value.
+  const [voiceURI, setVoiceURI] = useState<string>(() => preferences.voiceSettings.voiceURI);
+  const [rate, setRate] = useState(() => preferences.voiceSettings.speechRate);
   const [pitch, setPitch] = useState(1);
 
   const langVoices = voices.filter((v) => v.lang.toLowerCase().startsWith(lang));

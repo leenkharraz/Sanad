@@ -24,19 +24,20 @@ import { usePreferences } from "@/components/providers/preferences-provider";
 import { useSession } from "@/components/providers/session-provider";
 import { useTranslation, type TranslationKey } from "@/i18n/use-translation";
 
-interface ComingSoonRow {
+interface MoreSettingsRow {
   titleKey: TranslationKey;
   icon: LucideIcon;
+  href: string;
 }
 
-const COMING_SOON_GROUPS: ComingSoonRow[] = [
-  { titleKey: "settings.rows.captionDisplay", icon: Captions },
-  { titleKey: "settings.rows.emotionUrgency", icon: Smile },
-  { titleKey: "settings.rows.voiceSettings", icon: Mic },
-  { titleKey: "settings.rows.translation", icon: Languages },
-  { titleKey: "settings.rows.visionAssistance", icon: Eye },
-  { titleKey: "settings.rows.privacy", icon: Lock },
-  { titleKey: "settings.rows.aboutSanad", icon: Info },
+const MORE_SETTINGS_ROWS: MoreSettingsRow[] = [
+  { titleKey: "settings.rows.captionDisplay", icon: Captions, href: "/app/settings/caption-display" },
+  { titleKey: "settings.rows.emotionUrgency", icon: Smile, href: "/app/settings/emotion-urgency" },
+  { titleKey: "settings.rows.voiceSettings", icon: Mic, href: "/app/settings/voice" },
+  { titleKey: "settings.rows.translation", icon: Languages, href: "/app/settings/translation" },
+  { titleKey: "settings.rows.visionAssistance", icon: Eye, href: "/app/settings/vision-assistance" },
+  { titleKey: "settings.rows.privacy", icon: Lock, href: "/app/settings/privacy" },
+  { titleKey: "settings.rows.aboutSanad", icon: Info, href: "/app/settings/about" },
 ];
 
 export default function SettingsPage() {
@@ -101,17 +102,16 @@ export default function SettingsPage() {
       <section className="space-y-2">
         <h2 className="text-sm font-semibold text-text-primary">{t("settings.moreSettingsTitle")}</h2>
         <div className="divide-y divide-border rounded-2xl border border-border bg-surface">
-          {COMING_SOON_GROUPS.map(({ titleKey, icon: Icon }) => (
-            <div
+          {MORE_SETTINGS_ROWS.map(({ titleKey, icon: Icon, href }) => (
+            <Link
               key={titleKey}
-              className="flex min-h-14 items-center gap-3 px-4 py-3 text-sm text-text-muted"
+              href={href}
+              className="flex min-h-14 items-center gap-3 px-4 py-3 transition-colors hover:bg-surface-soft"
             >
-              <Icon aria-hidden="true" className="size-5 text-text-muted" />
-              <span className="flex-1">{t(titleKey)}</span>
-              <span className="rounded-full bg-warning-soft px-2 py-0.5 text-[0.7rem] font-medium text-warning">
-                {t("common.comingSoon")}
-              </span>
-            </div>
+              <Icon aria-hidden="true" className="size-5 text-brand-700" />
+              <span className="flex-1 text-sm font-medium text-text-primary">{t(titleKey)}</span>
+              <ChevronRight aria-hidden="true" className="size-4 text-text-muted" />
+            </Link>
           ))}
         </div>
       </section>
