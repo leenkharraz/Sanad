@@ -4,7 +4,7 @@ import { EmergencyQuickAction } from "@/components/navigation/emergency-quick-ac
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-dvh bg-background">
+    <div className="flex h-dvh bg-background">
       <DesktopSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="safe-top safe-x flex items-center justify-end px-4 py-3 md:hidden">
