@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { TriangleAlert, ChevronRight } from "lucide-react";
+import { useTranslation } from "@/i18n/use-translation";
 
 export function EmergencySection() {
+  const { t } = useTranslation();
+
   return (
     <Link
       href="/app/emergency"
@@ -11,10 +16,10 @@ export function EmergencySection() {
         <TriangleAlert aria-hidden="true" className="size-5" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="font-semibold">Emergency SOS</p>
-        <p className="text-xs text-danger/80">Trusted contacts, live location, one-tap alert</p>
+        <p className="font-semibold">{t("home.emergency.title")}</p>
+        <p className="text-xs text-danger/80">{t("home.emergency.subtitle")}</p>
       </div>
-      <ChevronRight aria-hidden="true" className="size-5 shrink-0" />
+      <ChevronRight aria-hidden="true" className="size-5 shrink-0 rtl:-scale-x-100" />
     </Link>
   );
 }

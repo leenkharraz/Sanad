@@ -7,16 +7,19 @@ import { ScreenHeader } from "@/components/navigation/screen-header";
 import { Button } from "@/components/ui/button";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { Waveform } from "@/features/hearing/waveform";
+import { useTranslation } from "@/i18n/use-translation";
 
-const DEMO_LINES = [
-  "This is a demo transcript — your browser doesn't support live speech recognition.",
-  "Try the latest Chrome or Edge on desktop or Android for real live transcription.",
-  "Everything else on this screen is fully functional once recognition is available.",
-];
+const RECOGNITION_ERROR_KEYS = {
+  "mic-denied": "hearing.errors.micDenied",
+  "no-speech": "hearing.errors.noSpeech",
+  generic: "hearing.errors.generic",
+  "start-failed": "hearing.errors.startFailed",
+} as const;
 
 export function HearingScreen() {
   const { status, transcript, interimTranscript, error, start, stop, clear } =
     useSpeechRecognition();
+  const { t, tList } = useTranslation();
   const [demoActive, setDemoActive] = useState(false);
   const [demoText, setDemoText] = useState("");
   const demoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -28,13 +31,14 @@ export function HearingScreen() {
   }, []);
 
   function runDemo() {
+    const demoLines = tList("hearing.demoLines");
     setDemoText("");
     setDemoActive(true);
     let index = 0;
     demoTimer.current = setInterval(() => {
-      setDemoText((prev) => (prev ? `${prev} ${DEMO_LINES[index]}` : DEMO_LINES[index]));
+      setDemoText((prev) => (prev ? `${prev} ${demoLines[index]}` : demoLines[index]));
       index += 1;
-      if (index >= DEMO_LINES.length && demoTimer.current) {
+      if (index >= demoLines.length && demoTimer.current) {
         clearInterval(demoTimer.current);
         setDemoActive(false);
       }
@@ -49,10 +53,13 @@ export function HearingScreen() {
   const listening = status === "listening";
   const shownTranscript = status === "unsupported" ? demoText : transcript;
   const shownInterim = status === "unsupported" ? "" : interimTranscript;
+  const errorMessage = error
+    ? t(RECOGNITION_ERROR_KEYS[error as keyof typeof RECOGNITION_ERROR_KEYS] ?? "hearing.errors.generic")
+    : null;
 
   return (
     <div className="space-y-6 pb-4">
-      <ScreenHeader title="Live Transcription" backHref="/app/home" />
+      <ScreenHeader title={t("hearing.title")} backHref="/app/home" />
 
       {status === "unsupported" && (
         <div
@@ -60,20 +67,17 @@ export function HearingScreen() {
           className="flex items-start gap-2.5 rounded-2xl border border-warning/30 bg-warning-soft px-4 py-3 text-sm text-warning"
         >
           <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          <p>
-            Live speech recognition isn&apos;t supported in this browser. You can try an honest
-            demo below — it plays a scripted transcript, it does not listen to your microphone.
-          </p>
+          <p>{t("hearing.unsupportedBanner")}</p>
         </div>
       )}
 
-      {status === "denied" && error && (
+      {status === "denied" && errorMessage && (
         <div
           role="alert"
           className="flex items-start gap-2.5 rounded-2xl border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger"
         >
           <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          <p>{error}</p>
+          <p>{errorMessage}</p>
         </div>
       )}
 
@@ -81,7 +85,7 @@ export function HearingScreen() {
         <div
           className={cn(
             "flex size-14 shrink-0 items-center justify-center rounded-full transition-colors",
-            listening || demoActive ? "bg-danger text-white" : "bg-surface-soft text-brand-700"
+            listening || demoActive ? "bg-danger text-white" : "bg-accent-hearing text-brand-700"
           )}
         >
           {listening || demoActive ? (
@@ -93,14 +97,14 @@ export function HearingScreen() {
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-text-primary" role="status">
             {listening || demoActive
-              ? "Listening…"
+              ? t("hearing.listening")
               : status === "denied"
-                ? "Microphone blocked"
+                ? t("hearing.micBlocked")
                 : status === "unsupported"
-                  ? "Demo mode available"
+                  ? t("hearing.demoModeAvailable")
                   : status === "error"
-                    ? "Something went wrong"
-                    : "Not listening"}
+                    ? t("hearing.somethingWrong")
+                    : t("hearing.notListening")}
           </p>
           <div className="mt-1.5">
             <Waveform active={listening || demoActive} />
@@ -108,9 +112,9 @@ export function HearingScreen() {
         </div>
       </div>
 
-      {error && status !== "denied" && (
+      {errorMessage && status !== "denied" && (
         <p role="alert" className="text-sm text-danger">
-          {error}
+          {errorMessage}
         </p>
       )}
 
@@ -126,8 +130,8 @@ export function HearingScreen() {
         ) : (
           <p className="text-text-muted">
             {status === "unsupported"
-              ? "Transcript will appear here once you start the demo."
-              : "Transcript will appear here once you start listening."}
+              ? t("hearing.transcriptPlaceholderDemo")
+              : t("hearing.transcriptPlaceholder")}
           </p>
         )}
       </div>
@@ -140,7 +144,7 @@ export function HearingScreen() {
             className="col-span-2"
             onClick={demoActive ? stopDemo : runDemo}
           >
-            {demoActive ? "Stop demo" : "Try demo mode"}
+            {demoActive ? t("hearing.stopDemo") : t("hearing.tryDemoMode")}
           </Button>
         ) : (
           <>
@@ -150,10 +154,10 @@ export function HearingScreen() {
               onClick={() => start("en-US")}
               disabled={listening}
             >
-              Start Listening
+              {t("hearing.startListening")}
             </Button>
             <Button type="button" variant="outline" size="touch" onClick={stop} disabled={!listening}>
-              Stop Listening
+              {t("hearing.stopListening")}
             </Button>
           </>
         )}
@@ -169,7 +173,7 @@ export function HearingScreen() {
         className="flex min-h-11 items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-text-primary disabled:pointer-events-none disabled:opacity-50"
       >
         <Trash2 aria-hidden="true" className="size-4" />
-        Clear transcript
+        {t("hearing.clearTranscript")}
       </button>
     </div>
   );

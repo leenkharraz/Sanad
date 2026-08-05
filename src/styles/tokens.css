@@ -1,58 +1,78 @@
 /*
-  SANAD design tokens — Figma-aligned V2.
-  Source of truth: design/SANAD_Color_Palette_v2.md and src/styles/sanad-colors-v2.css.
+  SANAD design tokens — Phase 3.
+  Rule: brown/caramel is an accent (text, icons, borders, buttons, selected
+  states), never the dominant page surface. Light mode is ivory/beige. Dark
+  mode is true charcoal, never brown-tinted at the surface level — warm
+  accents are reserved for selected/active/CTA states only. Calm mode shares
+  the same ivory/beige base as Light mode, with four controlled pastel
+  accents (never a rainbow of colors on every card).
+
   Do not hardcode hex values in components — use the semantic Tailwind
   utilities generated from these variables (bg-background, text-primary,
-  bg-danger, etc.) instead.
-
-  Rule: brown is an accent (text, borders, icons, buttons), never the
-  dominant page surface. Light mode is cream/white/beige. Dark mode is
-  true charcoal/graphite, never brown-tinted. Calm mode is cream + soft
-  blue-gray + periwinkle.
+  bg-danger, bg-accent-hearing, etc.) instead.
 */
 
 :root {
-  /* Brand scale — brown accent only, used for icons/links/selected states */
-  --brand-900: #3b2313;
-  --brand-800: #53311b;
-  --brand-700: #623b21;
-  --brand-600: #7c5738;
-  --brand-500: #9a7b62;
-  --brand-300: #c6af9e;
-  --brand-200: #e2cbb8;
-  --brand-100: #efe0d3;
-  --brand-50: #fcf9f5;
+  /* Brand scale — warm brown/caramel ramp anchored to the SANAD palette.
+     50/100/200 = Soft Ivory / Vanilla Cream / Warm Beige
+     500        = Caramel
+     700/800    = Walnut Brown / Dark Chocolate */
+  --brand-900: #241a12;
+  --brand-800: #3b2a20;
+  --brand-700: #7b5e4a;
+  --brand-600: #93765d;
+  --brand-500: #a67c52;
+  --brand-300: #c7a47c;
+  --brand-200: #d1b89a;
+  --brand-100: #f2e7d5;
+  --brand-50: #faf7f0;
 
-  /* Surfaces */
-  --background: #faf0e6;
-  --surface: #fcf9f5;
-  --surface-soft: #e2cbb8;
-  --surface-strong: #c6af9e;
-  --border-default: #af9681;
-  --border-strong: #7c5738;
+  /* Surfaces — ivory/beige base, white raised cards, brown never dominant */
+  --background: var(--brand-50);
+  --background-soft: var(--brand-100);
+  --surface: #ffffff;
+  --surface-soft: var(--brand-100);
+  --surface-strong: #e6d6be;
+  --surface-selected: #efe1cc;
+  --border-default: rgba(59, 42, 32, 0.12);
+  --border-strong: rgba(59, 42, 32, 0.28);
 
-  /* Text */
-  --text-primary: #463930;
-  --text-secondary: #7b695c;
-  --text-muted: #9c8b7e;
+  /* Text — all pairs verified >= 4.5:1 against background/surface/white */
+  --text-primary: #3b2a20;
+  --text-secondary: #7b5e4a;
+  --text-muted: #7f6a5a;
   --text-inverse: #ffffff;
 
   /* Accents */
   --gold: #f4b84a;
   --gold-soft: #fbe9c4;
 
-  /* Functional */
+  /* Per-feature controlled accents — aliases of surface-soft in Light/Dark,
+     the four SANAD Calm pastels in Calm mode. Never hardcode a pastel hex
+     in a component; use bg-accent-hearing / bg-accent-speech / etc.
+     Note: text rendered on top of these must use text-primary, not
+     text-brand-700 — brand-700 only clears the 3:1 icon/UI-component
+     threshold against the pastels, not the 4.5:1 text threshold. */
+  --accent-hearing: var(--brand-100);
+  --accent-speech: var(--brand-100);
+  --accent-noise: var(--brand-100);
+  --accent-secondary: var(--brand-100);
+
+  /* Functional — intentionally NOT softened by theme (an emergency alert or
+     warning must read the same in every mode, including Calm). Values
+     chosen to clear 4.5:1 against both their own *-soft background and
+     the page background. */
   --success: #2f7d5a;
   --success-soft: #dff1e8;
-  --warning: #b7791f;
+  --warning: #8a5713;
   --warning-soft: #f9ebcb;
-  --danger: #f45b65;
-  --danger-hover: #e14550;
-  --danger-soft: #fad7d9;
+  --danger: #be2e44;
+  --danger-hover: #a82539;
+  --danger-soft: #fdebec;
   --info: #3f6e8a;
   --info-soft: #e3eef4;
 
-  /* Splash / entry blurred gradient tones */
+  /* Ambient blur/glow tones (splash, welcome, auth, home header) */
   --splash-1: #a6866e;
   --splash-2: #b89d88;
   --splash-3: #dbcabb;
@@ -66,12 +86,12 @@
   --card-foreground: var(--text-primary);
   --popover: var(--surface);
   --popover-foreground: var(--text-primary);
-  --primary: #623b21;
-  --primary-hover: #53311b;
+  --primary: var(--brand-700);
+  --primary-hover: var(--brand-800);
   --primary-foreground: #ffffff;
   --secondary: var(--surface-soft);
   --secondary-foreground: var(--text-primary);
-  --muted: #f1e7dc;
+  --muted: var(--brand-100);
   --muted-foreground: var(--text-secondary);
   --accent: var(--gold-soft);
   --accent-foreground: var(--brand-900);
@@ -80,53 +100,82 @@
   --border: var(--border-default);
   --input: var(--border-default);
   --ring: var(--border-strong);
-  --focus-ring: var(--border-strong);
-  --radius: 1rem;
+  --focus-ring: var(--brand-700);
+  --radius: 1.1rem;
+
+  /* Font-size accessibility scale — driven by [data-font-size] on <html>.
+     Root font-size is scaled here, so every rem-based Tailwind text
+     utility across the app scales consistently. */
+  --font-scale: 1;
+}
+
+[data-font-size="large"] {
+  --font-scale: 1.125;
+}
+
+[data-font-size="extra-large"] {
+  --font-scale: 1.25;
 }
 
 .dark {
-  --brand-900: #faf8f5;
-  --brand-800: #595958;
-  --brand-700: #d6d3d0;
-  --brand-600: #9a9797;
-  --brand-500: #9a9797;
-  --brand-300: #595958;
-  --brand-200: #464646;
-  --brand-100: #363636;
-  --brand-50: #2a2a2a;
+  /* Warm accents in Dark mode are reserved for selected/active/CTA
+     surfaces and icon/link tint — never a large surface. */
+  --brand-900: #f2e7d5;
+  --brand-800: #d1b89a;
+  --brand-700: #e3c9a5;
+  --brand-600: #c9a67d;
+  --brand-500: #a67c52;
+  --brand-300: #7b5e4a;
+  --brand-200: #5c4433;
+  --brand-100: #3a2e22;
+  --brand-50: #2a231c;
 
-  --background: #1e1e1e;
-  --surface: #464646;
-  --surface-soft: #464646;
-  --surface-strong: #595958;
-  --border-default: #9a9797;
-  --border-strong: #d6d3d0;
+  --background: #1b1b1b;
+  --background-soft: #222222;
+  --surface: #292929;
+  --surface-soft: #303030;
+  --surface-strong: #373737;
+  --surface-selected: #3a2e22;
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
 
   --text-primary: #faf8f5;
-  --text-secondary: #d6d3d0;
-  --text-muted: #abaaa9;
-  --text-inverse: #1e1e1e;
+  --text-secondary: #c9c5c1;
+  --text-muted: #999591;
+  --text-inverse: #241c15;
 
   --gold: #f4b84a;
   --gold-soft: #3a2f1c;
+
+  --accent-hearing: var(--surface-soft);
+  --accent-speech: var(--surface-soft);
+  --accent-noise: var(--surface-soft);
+  --accent-secondary: var(--surface-soft);
 
   --success: #6fbe96;
   --success-soft: #23342b;
   --warning: #e0a94a;
   --warning-soft: #3a2f1c;
-  --danger: #f45b65;
-  --danger-hover: #ff6b74;
+  --danger: #f0616b;
+  --danger-hover: #ff7981;
   --danger-soft: #3a2427;
   --info: #7fb2ce;
   --info-soft: #22303a;
+
+  /* Subtle warm ambient glow against charcoal — not brown surfaces, a halo */
+  --splash-1: #4a3626;
+  --splash-2: #5c4433;
+  --splash-3: #3a2e22;
+  --splash-4: #2a231c;
+  --splash-5: #1b1b1b;
 
   --card: var(--surface);
   --card-foreground: var(--text-primary);
   --popover: var(--surface);
   --popover-foreground: var(--text-primary);
-  --primary: #faf8f5;
-  --primary-hover: #ffffff;
-  --primary-foreground: #1e1e1e;
+  --primary: var(--brand-800);
+  --primary-hover: var(--brand-600);
+  --primary-foreground: var(--text-inverse);
   --secondary: var(--surface-strong);
   --secondary-foreground: var(--text-primary);
   --muted: #2a2a2a;
@@ -136,58 +185,59 @@
   --border: var(--border-default);
   --input: var(--border-default);
   --ring: var(--border-strong);
-  --focus-ring: var(--border-strong);
+  --focus-ring: var(--brand-700);
 }
 
 /*
-  Calm mode: cream base with a soft blue-gray / periwinkle accent system,
-  matching the Figma "custom mode" prototype. Never brown, never a rainbow
-  of pastels — one accent hue only. Contrast is intentionally preserved.
+  Calm mode: the SAME ivory/beige base as Light mode — never a different
+  base palette — with four controlled pastel accents (soft blue, lavender,
+  mint, periwinkle) reserved for feature cards, chips, and selected states.
+  One accent family per section, never a rainbow dashboard. Functional
+  colors (danger/warning/success/info) stay identical to Light mode so an
+  emergency alert never reads as "softer" here.
 */
 .calm {
-  --brand-900: #3d3b57;
-  --brand-800: #52506f;
-  --brand-700: #5d5b8a;
-  --brand-600: #6d6b99;
-  --brand-500: #8785b8;
-  --brand-300: #cccde1;
-  --brand-200: #dde8eb;
-  --brand-100: #eaeef7;
-  --brand-50: #fcf9f5;
+  --background: var(--brand-50);
+  --background-soft: var(--brand-100);
+  --surface: #ffffff;
+  --surface-soft: var(--brand-100);
+  --surface-strong: #c4d0fb;
+  --surface-selected: #c4d0fb;
+  --border-default: rgba(59, 42, 32, 0.12);
+  --border-strong: rgba(82, 80, 111, 0.35);
 
-  --background: #faf0e6;
-  --surface: #fcf9f5;
-  --surface-soft: #dde8eb;
-  --surface-strong: #dde8eb;
-  --border-default: #cccde1;
-  --border-strong: #9f9ee5;
-
-  --text-primary: #52506f;
-  --text-secondary: #686684;
-  --text-muted: #8886a0;
+  --text-primary: #3b2a20;
+  --text-secondary: #7b5e4a;
+  --text-muted: #9c8878;
   --text-inverse: #ffffff;
 
-  --danger: #faafb1;
-  --danger-hover: #f591a1;
-  --danger-soft: #fbe4e5;
+  /* The four SANAD Calm pastels, each doing one job */
+  --accent-hearing: #d1e7fe; /* Live Captioning */
+  --accent-speech: #f3d9ff; /* Text to Speech */
+  --accent-noise: #baf1e3; /* Noise / focus controls */
+  --accent-secondary: #c4d0fb; /* supporting panels */
 
   --card: var(--surface);
   --card-foreground: var(--text-primary);
   --popover: var(--surface);
   --popover-foreground: var(--text-primary);
-  --primary: #9f9ee5;
-  --primary-hover: #8f8edb;
+  --primary: var(--brand-700);
+  --primary-hover: var(--brand-800);
   --primary-foreground: #ffffff;
   --secondary: var(--surface-soft);
   --secondary-foreground: var(--text-primary);
-  --muted: #f1eff9;
+  --muted: var(--brand-100);
   --muted-foreground: var(--text-secondary);
   --accent: #eaeef7;
   --accent-foreground: var(--brand-800);
   --border: var(--border-default);
   --input: var(--border-default);
   --ring: var(--border-strong);
-  --focus-ring: var(--border-strong);
+  --focus-ring: #5d5b8a;
+}
+
+html {
+  font-size: calc(16px * var(--font-scale));
 }
 
 @media (prefers-reduced-motion: reduce) {

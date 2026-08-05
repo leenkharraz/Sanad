@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { usePreferences } from "@/components/providers/preferences-provider";
+import { useTranslation } from "@/i18n/use-translation";
 
 const STEP = 10;
 
 export function NoiseFilterCard() {
   const { preferences, updatePreferences } = usePreferences();
+  const { t } = useTranslation();
   const { enabled, level } = preferences.noiseFilter;
 
   function setLevel(next: number) {
@@ -20,14 +22,14 @@ export function NoiseFilterCard() {
     <section aria-labelledby="noise-filter-heading" className="space-y-2.5">
       <div className="flex items-center justify-between">
         <h2 id="noise-filter-heading" className="text-sm font-semibold text-text-primary">
-          Noise filtering
+          {t("home.noiseFilter.title")}
         </h2>
         <Switch
           checked={enabled}
           onCheckedChange={(checked) =>
             updatePreferences({ noiseFilter: { enabled: checked, level } })
           }
-          aria-label="Enable noise filtering"
+          aria-label={t("home.noiseFilter.enable")}
         />
       </div>
 
@@ -38,7 +40,7 @@ export function NoiseFilterCard() {
         )}
       >
         <div className="flex items-center gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-surface-soft text-brand-700">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent-noise text-brand-700">
             <Waves aria-hidden="true" className="size-4.5" />
           </span>
           <div className="min-w-0 flex-1">
@@ -49,7 +51,7 @@ export function NoiseFilterCard() {
               type="button"
               disabled={!enabled}
               onClick={() => setLevel(level - STEP)}
-              aria-label="Decrease noise filtering level"
+              aria-label={t("home.noiseFilter.decrease")}
               className="flex size-8 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-surface-soft disabled:pointer-events-none disabled:opacity-40"
             >
               <Minus aria-hidden="true" className="size-3.5" />
@@ -61,17 +63,14 @@ export function NoiseFilterCard() {
               type="button"
               disabled={!enabled}
               onClick={() => setLevel(level + STEP)}
-              aria-label="Increase noise filtering level"
+              aria-label={t("home.noiseFilter.increase")}
               className="flex size-8 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-surface-soft disabled:pointer-events-none disabled:opacity-40"
             >
               <Plus aria-hidden="true" className="size-3.5" />
             </button>
           </div>
         </div>
-        <p className="mt-2.5 text-xs text-text-muted">
-          Saves your preferred level. Real-time audio noise cancellation on SANAD Glasses is a
-          future hardware integration — this control doesn&apos;t process live audio yet.
-        </p>
+        <p className="mt-2.5 text-xs text-text-muted">{t("home.noiseFilter.helper")}</p>
       </div>
     </section>
   );

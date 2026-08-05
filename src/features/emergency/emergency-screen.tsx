@@ -18,14 +18,26 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import { useEmergencyContacts } from "@/features/emergency/use-emergency-contacts";
 import { EmergencyContactsList } from "@/features/emergency/emergency-contacts-list";
 import { STORAGE_KEYS, readStorage, writeStorage } from "@/lib/storage";
-import { DEFAULT_EMERGENCY_MESSAGE } from "@/types/emergency";
+import { useTranslation } from "@/i18n/use-translation";
+import { DEFAULT_EMERGENCY_MESSAGE_TEXT } from "@/i18n/localized-defaults";
 
 type SendState = "idle" | "confirming" | "sending" | "sent";
+
+const GEO_ERROR_KEYS = {
+  unsupported: "emergency.errors.geoUnsupported",
+  denied: "emergency.errors.geoDenied",
+  error: "emergency.errors.geoError",
+} as const;
 
 export function EmergencyScreen() {
   const { contacts, addContact, updateContact, deleteContact } = useEmergencyContacts();
   const { status: geoStatus, coords, error: geoError, request: requestLocation } = useGeolocation();
-  const [message, setMessage] = useState(DEFAULT_EMERGENCY_MESSAGE);
+  const { t, lang } = useTranslation();
+  // Seeded from the current UI language, but only ever used until a real
+  // (possibly untouched-default) value is found in storage — see the effect
+  // below. Once anything is saved, it's the user's content and a later
+  // language switch must never overwrite it.
+  const [message, setMessage] = useState(() => DEFAULT_EMERGENCY_MESSAGE_TEXT[lang]);
   const [shareLocation, setShareLocation] = useState(true);
   const [sendState, setSendState] = useState<SendState>("idle");
 
@@ -46,26 +58,30 @@ export function EmergencyScreen() {
     window.setTimeout(() => setSendState("sent"), 1200);
   }
 
+  const geoErrorMessage = geoError ? t(GEO_ERROR_KEYS[geoError as keyof typeof GEO_ERROR_KEYS] ?? "emergency.errors.geoError") : null;
+  const contactWord = t(contacts.length === 1 ? "emergency.contactSingular" : "emergency.contactPlural");
+  const locationSuffix = shareLocation && geoStatus === "ready" ? t("emergency.withLocationSuffix") : "";
+
   return (
     <div className="space-y-6 pb-4">
-      <ScreenHeader title="Emergency SOS" backHref="/app/home" />
+      <ScreenHeader title={t("emergency.title")} backHref="/app/home" />
 
       <div className="flex items-start gap-2.5 rounded-2xl border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">
         <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
         <p>
-          Sending an alert is <strong>simulated</strong> — SANAD has no backend yet, so nothing is
-          actually delivered to your contacts. Calling a contact directly does work, using your
-          device&apos;s phone app.
+          {t("emergency.simulatedNoticePrefix")} <strong>{t("emergency.simulatedWord")}</strong>{" "}
+          {t("emergency.simulatedNoticeSuffix")}
         </p>
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="emergency-message">Emergency message</Label>
+        <Label htmlFor="emergency-message">{t("emergency.messageLabel")}</Label>
         <textarea
           id="emergency-message"
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           rows={3}
+          dir="auto"
           className="w-full resize-none rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
         />
       </div>
@@ -73,13 +89,13 @@ export function EmergencyScreen() {
       <section className="space-y-2.5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-text-primary">Share my location</p>
-            <p className="text-xs text-text-secondary">Include your current location in the alert</p>
+            <p className="text-sm font-semibold text-text-primary">{t("emergency.shareLocationTitle")}</p>
+            <p className="text-xs text-text-secondary">{t("emergency.shareLocationSubtitle")}</p>
           </div>
           <Switch
             checked={shareLocation}
             onCheckedChange={setShareLocation}
-            aria-label="Share my location with the alert"
+            aria-label={t("emergency.shareLocationAria")}
           />
         </div>
 
@@ -92,19 +108,23 @@ export function EmergencyScreen() {
               <div className="min-w-0 flex-1">
                 {geoStatus === "ready" && coords ? (
                   <p className="text-sm text-text-primary tabular-nums">
-                    {coords.latitude.toFixed(5)}, {coords.longitude.toFixed(5)}
-                    <span className="ml-1 text-xs text-text-muted">(±{Math.round(coords.accuracy)}m)</span>
+                    <bdi dir="ltr">
+                      {coords.latitude.toFixed(5)}, {coords.longitude.toFixed(5)}
+                    </bdi>
+                    <span className="ms-1 text-xs text-text-muted">
+                      <bdi dir="ltr">{t("emergency.accuracySuffix", { meters: Math.round(coords.accuracy) })}</bdi>
+                    </span>
                   </p>
                 ) : geoStatus === "loading" ? (
-                  <p className="text-sm text-text-secondary">Getting your location…</p>
+                  <p className="text-sm text-text-secondary">{t("emergency.gettingLocation")}</p>
                 ) : geoStatus === "denied" ? (
-                  <p className="text-sm text-danger">{geoError}</p>
+                  <p className="text-sm text-danger">{geoErrorMessage}</p>
                 ) : geoStatus === "unsupported" ? (
-                  <p className="text-sm text-text-muted">Geolocation isn&apos;t supported in this browser.</p>
+                  <p className="text-sm text-text-muted">{t("emergency.errors.geoUnsupported")}</p>
                 ) : geoStatus === "error" ? (
-                  <p className="text-sm text-danger">{geoError}</p>
+                  <p className="text-sm text-danger">{geoErrorMessage}</p>
                 ) : (
-                  <p className="text-sm text-text-muted">Location not fetched yet.</p>
+                  <p className="text-sm text-text-muted">{t("emergency.locationNotFetched")}</p>
                 )}
               </div>
               <Button
@@ -114,7 +134,7 @@ export function EmergencyScreen() {
                 onClick={requestLocation}
                 disabled={geoStatus === "loading" || geoStatus === "unsupported"}
               >
-                {geoStatus === "ready" ? "Refresh" : "Get location"}
+                {geoStatus === "ready" ? t("emergency.refreshLocation") : t("emergency.getLocation")}
               </Button>
             </div>
           </div>
@@ -131,15 +151,15 @@ export function EmergencyScreen() {
       <Button
         type="button"
         size="touch"
-        className="w-full bg-danger text-white hover:bg-[#e14550]"
+        className="w-full bg-danger text-white hover:bg-danger-hover"
         onClick={() => setSendState("confirming")}
         disabled={contacts.length === 0}
       >
         <TriangleAlert aria-hidden="true" className="size-4" />
-        Send Emergency Alert
+        {t("emergency.sendAlert")}
       </Button>
       {contacts.length === 0 && (
-        <p className="text-center text-xs text-text-muted">Add a trusted contact to send an alert.</p>
+        <p className="text-center text-xs text-text-muted">{t("emergency.addContactHint")}</p>
       )}
 
       <Dialog
@@ -148,15 +168,16 @@ export function EmergencyScreen() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Send emergency alert?</DialogTitle>
+            <DialogTitle>{t("emergency.confirmDialog.title")}</DialogTitle>
             <DialogDescription>
-              This will simulate sending your message to {contacts.length}{" "}
-              {contacts.length === 1 ? "contact" : "contacts"}
-              {shareLocation && geoStatus === "ready" ? " with your current location" : ""}. No
-              real message is sent — SANAD has no backend yet.
+              {t("emergency.confirmDialog.description", {
+                count: contacts.length,
+                contactWord,
+                locationSuffix,
+              })}
             </DialogDescription>
           </DialogHeader>
-          <div className="rounded-xl bg-muted px-3.5 py-3 text-sm text-text-secondary">
+          <div dir="auto" className="rounded-xl bg-muted px-3.5 py-3 text-sm text-text-secondary">
             &ldquo;{message}&rdquo;
           </div>
           <DialogFooter>
@@ -166,15 +187,15 @@ export function EmergencyScreen() {
               onClick={() => setSendState("idle")}
               disabled={sendState === "sending"}
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               type="button"
-              className="bg-danger text-white hover:bg-[#e14550]"
+              className="bg-danger text-white hover:bg-danger-hover"
               onClick={handleSend}
               disabled={sendState === "sending"}
             >
-              {sendState === "sending" ? "Sending…" : "Confirm & send"}
+              {sendState === "sending" ? t("emergency.confirmDialog.sending") : t("emergency.confirmDialog.confirmSend")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -185,17 +206,15 @@ export function EmergencyScreen() {
           <DialogHeader>
             <div className="flex items-center gap-2.5">
               <CheckCircle2 aria-hidden="true" className="size-5 text-success" />
-              <DialogTitle>Simulated alert sent</DialogTitle>
+              <DialogTitle>{t("emergency.sentDialog.title")}</DialogTitle>
             </div>
             <DialogDescription>
-              Your message was simulated as sent to {contacts.length}{" "}
-              {contacts.length === 1 ? "contact" : "contacts"}. This is a prototype — no real SMS
-              or notification was delivered.
+              {t("emergency.sentDialog.description", { count: contacts.length, contactWord })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button type="button" onClick={() => setSendState("idle")}>
-              Done
+              {t("common.done")}
             </Button>
           </DialogFooter>
         </DialogContent>

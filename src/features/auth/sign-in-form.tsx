@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
@@ -12,16 +12,21 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormError } from "@/components/feedback/form-error";
 import { ProviderButtons } from "@/features/auth/provider-buttons";
-import { signInSchema, type SignInValues } from "@/features/auth/schemas";
+import { createSignInSchema, type SignInValues } from "@/features/auth/schemas";
+import { authErrorKey } from "@/features/auth/auth-error";
 import { mockSignIn } from "@/lib/mock-auth";
 import { useSession } from "@/components/providers/session-provider";
 import { usePreferences } from "@/components/providers/preferences-provider";
+import { useTranslation } from "@/i18n/use-translation";
 
 export function SignInForm() {
   const router = useRouter();
   const { signIn } = useSession();
   const { preferences } = usePreferences();
+  const { t } = useTranslation();
   const [formError, setFormError] = useState<string | null>(null);
+
+  const schema = useMemo(() => createSignInSchema(t), [t]);
 
   const {
     register,
@@ -30,7 +35,7 @@ export function SignInForm() {
     control,
     formState: { errors, isSubmitting },
   } = useForm<SignInValues>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(schema),
     defaultValues: { email: "", password: "", rememberMe: true },
   });
   const rememberMe = useWatch({ control, name: "rememberMe" });
@@ -48,7 +53,7 @@ export function SignInForm() {
         router.push("/app/home");
       }
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : "Something went wrong.");
+      setFormError(t(authErrorKey(error)));
     }
   };
 
@@ -57,13 +62,14 @@ export function SignInForm() {
       {formError && <FormError message={formError} />}
 
       <div className="space-y-1.5">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t("auth.email")}</Label>
         <Input
           id="email"
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
-          className="h-11"
+          placeholder={t("auth.emailPlaceholder")}
+          dir="ltr"
+          className="h-11 text-start"
           aria-invalid={!!errors.email}
           {...register("email")}
         />
@@ -75,12 +81,12 @@ export function SignInForm() {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("auth.password")}</Label>
         <Input
           id="password"
           type="password"
           autoComplete="current-password"
-          placeholder="Enter your password"
+          placeholder={t("auth.passwordPlaceholder")}
           className="h-11"
           aria-invalid={!!errors.password}
           {...register("password")}
@@ -98,35 +104,35 @@ export function SignInForm() {
             checked={rememberMe}
             onCheckedChange={(checked) => setValue("rememberMe", checked === true)}
           />
-          Remember me
+          {t("auth.rememberMe")}
         </label>
         <Link
           href="/auth/forgot-password"
           className="text-sm font-medium text-brand-700 hover:underline"
         >
-          Forgot password?
+          {t("auth.forgotPasswordLink")}
         </Link>
       </div>
 
       <Button type="submit" size="touch" className="w-full" disabled={isSubmitting}>
         {isSubmitting && <Loader2 aria-hidden="true" className="size-4 animate-spin" />}
-        Sign in
+        {t("auth.signIn.submit")}
       </Button>
 
       <button
         type="button"
         disabled
         aria-disabled="true"
-        title="Face ID sign-in is a prototype placeholder and is not connected yet."
+        title={t("auth.faceIdNotice")}
         className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-medium text-text-secondary opacity-60"
       >
         <ScanFace aria-hidden="true" className="size-4.5" />
-        Sign in with Face ID
+        {t("auth.faceId")}
       </button>
 
       <div className="flex items-center gap-3 py-1 text-xs text-text-muted">
         <span className="h-px flex-1 bg-border" />
-        or continue with
+        {t("auth.orContinueWith")}
         <span className="h-px flex-1 bg-border" />
       </div>
 

@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+"use client";
+
 import { AuthScreenLayout } from "@/features/auth/auth-screen-layout";
 import { SignUpForm } from "@/features/auth/sign-up-form";
-
-export const metadata: Metadata = { title: "Create account — SANAD" };
+import { useTranslation } from "@/i18n/use-translation";
 
 export default function SignUpPage() {
+  const { t } = useTranslation();
   return (
     <AuthScreenLayout
-      title="Create your account"
-      subtitle="Set up SANAD to match how you hear, see, and speak."
+      title={t("auth.signUp.title")}
+      subtitle={t("auth.signUp.subtitle")}
       backHref="/welcome"
     >
       <SignUpForm />

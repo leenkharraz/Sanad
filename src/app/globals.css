@@ -8,7 +8,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  /* Inter has no Arabic glyphs at all — the OS-native fallbacks here (not a
+     new font dependency) carry Arabic script cleanly once a character
+     outside Inter's coverage is reached. */
+  --font-sans: var(--font-sans), "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
 
@@ -33,15 +36,21 @@
   --color-focus-ring: var(--focus-ring);
 
   /* SANAD semantic tokens */
+  --color-background-soft: var(--background-soft);
   --color-surface: var(--surface);
   --color-surface-soft: var(--surface-soft);
   --color-surface-strong: var(--surface-strong);
+  --color-surface-selected: var(--surface-selected);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
   --color-text-inverse: var(--text-inverse);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
+  --color-accent-hearing: var(--accent-hearing);
+  --color-accent-speech: var(--accent-speech);
+  --color-accent-noise: var(--accent-noise);
+  --color-accent-secondary: var(--accent-secondary);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);

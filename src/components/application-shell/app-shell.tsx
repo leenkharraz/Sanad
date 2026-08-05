@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <EmergencyQuickAction />
         </header>
         <main className="flex-1 overflow-y-auto pb-24 md:pb-10">
-          <div className="safe-x mx-auto w-full max-w-2xl px-4 py-1 md:px-10 md:py-8">
+          <div className="safe-x mx-auto w-full max-w-3xl px-4 py-1 md:px-10 md:py-8">
             {children}
           </div>
         </main>

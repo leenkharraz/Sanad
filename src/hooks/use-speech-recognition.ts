@@ -65,17 +65,15 @@ export function useSpeechRecognition() {
     recognition.onerror = (event) => {
       if (event.error === "not-allowed" || event.error === "permission-denied") {
         setStatus("denied");
-        setError(
-          "Microphone access was denied. Allow microphone access in your browser's site settings to use live transcription."
-        );
+        setError("mic-denied");
         return;
       }
       if (event.error === "no-speech") {
-        setError("No speech detected. Try speaking again.");
+        setError("no-speech");
         return;
       }
       setStatus("error");
-      setError("Something went wrong with live transcription.");
+      setError("generic");
     };
 
     recognition.onend = () => {
@@ -90,7 +88,7 @@ export function useSpeechRecognition() {
       setError(null);
     } catch {
       setStatus("error");
-      setError("Could not start the microphone.");
+      setError("start-failed");
     }
   }, []);
 

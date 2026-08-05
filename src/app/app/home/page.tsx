@@ -11,15 +11,22 @@ import { RecentActivitySection } from "@/features/home/recent-activity-section";
 
 export default function HomePage() {
   return (
-    <div className="space-y-5 pb-4">
+    <div className="space-y-6 pb-4">
       <HomeHeader />
       <DateTimeCard />
       <PrimaryActions />
-      <NoiseFilterCard />
-      <QuickPhrasesRow />
+
+      <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-5 space-y-6 lg:space-y-0">
+        <NoiseFilterCard />
+        <QuickPhrasesRow />
+      </div>
+
       <EmergencySection />
-      <GlassesStatusCard />
-      <RecentActivitySection />
+
+      <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-5 space-y-3 lg:space-y-0">
+        <GlassesStatusCard />
+        <RecentActivitySection />
+      </div>
     </div>
   );
 }

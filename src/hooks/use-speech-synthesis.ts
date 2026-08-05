@@ -73,7 +73,7 @@ export function useSpeechSynthesis() {
         return;
       }
       setStatus("error");
-      setError("Something went wrong while speaking. Try again.");
+      setError("generic");
     };
 
     window.speechSynthesis.speak(utterance);

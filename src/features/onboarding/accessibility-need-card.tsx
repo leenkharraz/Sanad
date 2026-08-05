@@ -2,6 +2,7 @@
 
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n/use-translation";
 import type { AccessibilityNeedOption } from "@/data/accessibility-needs";
 
 export function AccessibilityNeedCard({
@@ -14,18 +15,22 @@ export function AccessibilityNeedCard({
   onToggle: () => void;
 }) {
   const Icon = option.icon;
+  const { t, tList } = useTranslation();
+  const title = t(option.titleKey);
+  const description = t(option.descriptionKey);
+  const functions = tList(option.functionsKey);
 
   return (
     <button
       type="button"
       role="switch"
       aria-checked={selected}
-      aria-label={`${option.title}. ${option.description}`}
+      aria-label={`${title}. ${description}`}
       onClick={onToggle}
       className={cn(
-        "flex w-full items-start gap-4 rounded-2xl border px-4 py-4 text-left transition-colors",
+        "flex w-full items-start gap-4 rounded-2xl border px-4 py-4 text-start transition-colors",
         selected
-          ? "border-brand-700 bg-surface-strong"
+          ? "border-brand-700 bg-surface-selected"
           : "border-border bg-surface hover:bg-surface-soft"
       )}
     >
@@ -41,7 +46,7 @@ export function AccessibilityNeedCard({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-semibold text-text-primary">{option.title}</h3>
+          <h3 className="font-semibold text-text-primary">{title}</h3>
           <span
             aria-hidden="true"
             className={cn(
@@ -54,9 +59,9 @@ export function AccessibilityNeedCard({
             {selected && <Check className="size-3.5" strokeWidth={3} />}
           </span>
         </div>
-        <p className="mt-1 text-sm text-text-secondary">{option.description}</p>
+        <p className="mt-1 text-sm text-text-secondary">{description}</p>
         <ul className="mt-2.5 flex flex-wrap gap-1.5">
-          {option.functions.map((fn) => (
+          {functions.map((fn) => (
             <li
               key={fn}
               className="rounded-full bg-surface-soft px-2.5 py-1 text-xs text-text-secondary"

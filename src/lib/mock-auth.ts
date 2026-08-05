@@ -21,7 +21,7 @@ function nameFromEmail(email: string): string {
 export async function mockSignIn(email: string, password: string): Promise<SanadUser> {
   await delay(SIMULATED_LATENCY_MS);
   if (password.length < 8) {
-    throw new Error("Incorrect email or password.");
+    throw new Error("INCORRECT_CREDENTIALS");
   }
   return {
     id: `local-${email}`,
@@ -34,7 +34,7 @@ export async function mockSignIn(email: string, password: string): Promise<Sanad
 export async function mockSignUp(name: string, email: string, password: string): Promise<SanadUser> {
   await delay(SIMULATED_LATENCY_MS);
   if (password.length < 8) {
-    throw new Error("Could not create account.");
+    throw new Error("COULD_NOT_CREATE_ACCOUNT");
   }
   return {
     id: `local-${email}`,
@@ -54,6 +54,6 @@ export const DEMO_USER: SanadUser = {
 export async function mockRequestPasswordReset(email: string): Promise<void> {
   await delay(SIMULATED_LATENCY_MS);
   if (!email) {
-    throw new Error("Enter an email address first.");
+    throw new Error("ENTER_EMAIL_FIRST");
   }
 }

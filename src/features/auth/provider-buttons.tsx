@@ -1,29 +1,40 @@
-import { Button } from "@/components/ui/button";
+"use client";
 
-const PROVIDERS = ["Google", "Apple", "Nafath"] as const;
+import { Fingerprint } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { GoogleIcon, AppleIcon } from "@/components/design-system/provider-icons";
+import { useTranslation, type TranslationKey } from "@/i18n/use-translation";
+
+const PROVIDERS: { nameKey: TranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { nameKey: "auth.providers.google", icon: GoogleIcon },
+  { nameKey: "auth.providers.apple", icon: AppleIcon },
+  { nameKey: "auth.providers.nafath", icon: Fingerprint },
+];
 
 export function ProviderButtons() {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
-      <div className="grid grid-cols-3 gap-2">
-        {PROVIDERS.map((provider) => (
+      {PROVIDERS.map(({ nameKey, icon: Icon }) => {
+        const name = t(nameKey);
+        return (
           <Button
-            key={provider}
+            key={nameKey}
             type="button"
             variant="outline"
             size="touch"
             disabled
             aria-disabled="true"
-            title={`${provider} sign-in is a prototype placeholder and is not connected yet.`}
-            className="flex-col gap-0.5 px-1 text-xs"
+            title={t("auth.providerPrototypeNotice", { provider: name })}
+            className="w-full justify-center gap-2.5"
           >
-            {provider}
+            <Icon aria-hidden="true" className="size-4.5" />
+            {t("auth.providerContinueWith", { provider: name })}
           </Button>
-        ))}
-      </div>
-      <p className="text-center text-xs text-text-muted">
-        Prototype integrations — not connected yet
-      </p>
+        );
+      })}
+      <p className="text-center text-xs text-text-muted">{t("auth.prototypeNotice")}</p>
     </div>
   );
 }

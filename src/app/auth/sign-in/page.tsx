@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
+"use client";
+
 import { AuthScreenLayout } from "@/features/auth/auth-screen-layout";
 import { SignInForm } from "@/features/auth/sign-in-form";
-
-export const metadata: Metadata = { title: "Sign in — SANAD" };
+import { useTranslation } from "@/i18n/use-translation";
 
 export default function SignInPage() {
+  const { t } = useTranslation();
   return (
-    <AuthScreenLayout title="Welcome back" subtitle="Sign in to continue to SANAD.">
+    <AuthScreenLayout title={t("auth.signIn.title")} subtitle={t("auth.signIn.subtitle")}>
       <SignInForm />
     </AuthScreenLayout>
   );

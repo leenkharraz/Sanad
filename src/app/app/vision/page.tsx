@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
+"use client";
+
 import { Eye } from "lucide-react";
 import { PhaseStub } from "@/components/feedback/phase-stub";
-
-export const metadata: Metadata = { title: "Vision Assistance — SANAD" };
+import { useTranslation } from "@/i18n/use-translation";
 
 export default function VisionPage() {
+  const { t } = useTranslation();
   return (
     <div className="pt-4">
       <PhaseStub
         icon={Eye}
-        title="Vision Assistance"
-        description="Camera preview, object detection, OCR reading, distance alerts, and reading mode will appear here."
-        phase="Phase 3"
+        title={t("stubs.vision.title")}
+        description={t("stubs.vision.description")}
       />
     </div>
   );

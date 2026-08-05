@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 interface SegmentedOption<T extends string> {
   value: T;
   label: string;
+  disabled?: boolean;
 }
 
 export function SegmentedControl<T extends string>({
@@ -32,9 +33,10 @@ export function SegmentedControl<T extends string>({
             type="button"
             role="radio"
             aria-checked={active}
+            disabled={option.disabled}
             onClick={() => onChange(option.value)}
             className={cn(
-              "min-h-11 flex-1 rounded-lg px-3 text-sm font-medium transition-colors",
+              "min-h-11 flex-1 rounded-lg px-3 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
               active
                 ? "bg-surface text-text-primary shadow-sm"
                 : "text-text-secondary hover:text-text-primary"

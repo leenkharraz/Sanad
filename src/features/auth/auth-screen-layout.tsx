@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { BrandLogo } from "@/components/design-system/brand-logo";
+import { AmbientGlow } from "@/components/design-system/ambient-glow";
+import { useTranslation } from "@/i18n/use-translation";
 
 interface AuthScreenLayoutProps {
   title: string;
@@ -15,23 +19,22 @@ export function AuthScreenLayout({
   children,
   backHref = "/welcome",
 }: AuthScreenLayoutProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex min-h-dvh flex-1 flex-col bg-background">
       {/* Warm blurred decorative top section */}
       <div className="safe-top relative flex shrink-0 flex-col overflow-hidden pb-14">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-16 -left-14 size-56 rounded-full bg-[#A6866E]/40 blur-3xl" />
-          <div className="absolute -top-8 right-[-15%] size-64 rounded-full bg-[#DBCABB]/50 blur-3xl" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
-        </div>
+        <AmbientGlow variant="soft" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-background" />
 
         <div className="relative flex items-center px-4 py-3">
           <Link
             href={backHref}
-            aria-label="Go back"
+            aria-label={t("common.goBack")}
             className="flex size-11 items-center justify-center rounded-full text-text-secondary hover:bg-surface/60 hover:text-text-primary"
           >
-            <ChevronLeft aria-hidden="true" className="size-5" />
+            <ChevronLeft aria-hidden="true" className="size-5 rtl:-scale-x-100" />
           </Link>
         </div>
 

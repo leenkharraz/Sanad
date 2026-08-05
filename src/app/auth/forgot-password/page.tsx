@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+"use client";
+
 import { AuthScreenLayout } from "@/features/auth/auth-screen-layout";
 import { ForgotPasswordForm } from "@/features/auth/forgot-password-form";
-
-export const metadata: Metadata = { title: "Reset password — SANAD" };
+import { useTranslation } from "@/i18n/use-translation";
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   return (
     <AuthScreenLayout
-      title="Reset your password"
-      subtitle="Enter your email and we'll send a reset link."
+      title={t("auth.forgotPassword.title")}
+      subtitle={t("auth.forgotPassword.subtitle")}
       backHref="/auth/sign-in"
     >
       <ForgotPasswordForm />

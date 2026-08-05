@@ -8,11 +8,16 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useSpeechSynthesis } from "@/hooks/use-speech-synthesis";
 import { QuickPhraseEditor } from "@/features/speech/quick-phrase-editor";
+import { useTranslation } from "@/i18n/use-translation";
 
+// The TTS *spoken* language is a separate preference from the app's UI
+// language (see useTranslation) — switching the interface to Arabic must
+// never silently change what language SANAD speaks aloud, and vice versa.
 type SpeechLang = "en" | "ar";
 
 export function SpeechScreen() {
   const { status, voices, error, speak, stop } = useSpeechSynthesis();
+  const { t } = useTranslation();
   const [text, setText] = useState("");
   const [lang, setLang] = useState<SpeechLang>("en");
   const [voiceURI, setVoiceURI] = useState<string>("");
@@ -32,7 +37,7 @@ export function SpeechScreen() {
 
   return (
     <div className="space-y-6 pb-4">
-      <ScreenHeader title="Text To Speech" backHref="/app/home" />
+      <ScreenHeader title={t("speech.title")} backHref="/app/home" />
 
       {status === "unsupported" && (
         <div
@@ -40,15 +45,12 @@ export function SpeechScreen() {
           className="flex items-start gap-2.5 rounded-2xl border border-warning/30 bg-warning-soft px-4 py-3 text-sm text-warning"
         >
           <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          <p>
-            Speech playback isn&apos;t supported in this browser. Try the latest Chrome, Edge, or
-            Safari.
-          </p>
+          <p>{t("speech.unsupportedBanner")}</p>
         </div>
       )}
 
       <SegmentedControl<SpeechLang>
-        ariaLabel="Speech language"
+        ariaLabel={t("speech.languageLabel")}
         value={lang}
         onChange={setLang}
         options={[
@@ -58,21 +60,21 @@ export function SpeechScreen() {
       />
 
       <div className="space-y-1.5">
-        <Label htmlFor="tts-text">Text to speak</Label>
+        <Label htmlFor="tts-text">{t("speech.textToSpeakLabel")}</Label>
         <textarea
           id="tts-text"
           value={text}
           onChange={(event) => setText(event.target.value)}
           rows={6}
-          placeholder="Type something to speak aloud…"
-          dir={lang === "ar" ? "rtl" : "ltr"}
+          placeholder={t("speech.textPlaceholder")}
+          dir="auto"
           className="w-full resize-none rounded-2xl border border-border bg-surface px-4 py-3 text-base text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
         />
       </div>
 
       {error && (
         <p role="alert" className="text-sm text-danger">
-          {error}
+          {t("speech.errors.generic")}
         </p>
       )}
 
@@ -85,7 +87,7 @@ export function SpeechScreen() {
           disabled={status === "unsupported" || !text.trim()}
         >
           <Volume2 aria-hidden="true" className="size-4" />
-          {status === "speaking" ? "Speaking…" : "Speak"}
+          {status === "speaking" ? t("speech.speaking") : t("speech.speak")}
         </Button>
         <Button
           type="button"
@@ -95,7 +97,7 @@ export function SpeechScreen() {
           disabled={status !== "speaking"}
         >
           <Square aria-hidden="true" className="size-4" />
-          Stop
+          {t("speech.stop")}
         </Button>
       </div>
       <button
@@ -104,17 +106,18 @@ export function SpeechScreen() {
         disabled={!text}
         className="min-h-11 text-sm font-medium text-text-secondary underline-offset-4 hover:text-text-primary hover:underline disabled:pointer-events-none disabled:opacity-50"
       >
-        Clear text
+        {t("speech.clearText")}
       </button>
 
       <section className="space-y-2">
-        <Label htmlFor="tts-voice">Voice</Label>
+        <Label htmlFor="tts-voice">{t("speech.voiceLabel")}</Label>
         {langVoices.length > 0 ? (
           <select
             id="tts-voice"
+            dir="ltr"
             value={selectedVoice?.voiceURI ?? ""}
             onChange={(event) => setVoiceURI(event.target.value)}
-            className="h-11 w-full rounded-xl border border-border bg-surface px-3.5 text-sm text-text-primary"
+            className="h-11 w-full rounded-xl border border-border bg-surface px-3.5 text-start text-sm text-text-primary"
           >
             {langVoices.map((voice) => (
               <option key={voice.voiceURI} value={voice.voiceURI}>
@@ -125,15 +128,17 @@ export function SpeechScreen() {
         ) : (
           <p className="text-sm text-text-muted">
             {status === "checking"
-              ? "Loading voices…"
-              : `No ${lang === "ar" ? "Arabic" : "English"} voices were found on this device — Speak will fall back to your browser's default voice.`}
+              ? t("speech.loadingVoices")
+              : t("speech.noVoicesFound", {
+                  language: lang === "ar" ? t("speech.languageNameArabic") : t("speech.languageNameEnglish"),
+                })}
           </p>
         )}
       </section>
 
       <section className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="tts-rate">Speed</Label>
+          <Label htmlFor="tts-rate">{t("speech.speedLabel")}</Label>
           <span className="text-sm font-medium text-text-secondary tabular-nums">
             {rate.toFixed(1)}x
           </span>
@@ -152,7 +157,7 @@ export function SpeechScreen() {
 
       <section className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="tts-pitch">Pitch</Label>
+          <Label htmlFor="tts-pitch">{t("speech.pitchLabel")}</Label>
           <span className="text-sm font-medium text-text-secondary tabular-nums">
             {pitch.toFixed(1)}
           </span>

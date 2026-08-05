@@ -19,7 +19,7 @@ export function useGeolocation() {
   const request = useCallback(() => {
     if (typeof window === "undefined" || !("geolocation" in navigator)) {
       setStatus("unsupported");
-      setError("Geolocation isn't supported in this browser.");
+      setError("unsupported");
       return;
     }
 
@@ -38,13 +38,11 @@ export function useGeolocation() {
       (err) => {
         if (err.code === err.PERMISSION_DENIED) {
           setStatus("denied");
-          setError(
-            "Location access was denied. Allow location access in your browser's site settings to share your position."
-          );
+          setError("denied");
           return;
         }
         setStatus("error");
-        setError("Could not determine your location. Try again.");
+        setError("error");
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );

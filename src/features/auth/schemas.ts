@@ -1,32 +1,41 @@
 import { z } from "zod";
+import type { TranslationKey } from "@/i18n/use-translation";
 
-export const signInSchema = z.object({
-  email: z.string().min(1, "Email is required.").email("Enter a valid email address."),
-  password: z.string().min(1, "Password is required."),
-  rememberMe: z.boolean(),
-});
+type Translate = (key: TranslationKey) => string;
 
-export type SignInValues = z.infer<typeof signInSchema>;
-
-export const signUpSchema = z
-  .object({
-    name: z.string().min(2, "Enter your full name."),
-    email: z.string().min(1, "Email is required.").email("Enter a valid email address."),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters.")
-      .regex(/[0-9]/, "Password must include at least one number."),
-    confirmPassword: z.string().min(1, "Confirm your password."),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match.",
-    path: ["confirmPassword"],
+export function createSignInSchema(t: Translate) {
+  return z.object({
+    email: z.string().min(1, t("auth.validation.emailRequired")).email(t("auth.validation.emailInvalid")),
+    password: z.string().min(1, t("auth.validation.passwordRequired")),
+    rememberMe: z.boolean(),
   });
+}
 
-export type SignUpValues = z.infer<typeof signUpSchema>;
+export type SignInValues = z.infer<ReturnType<typeof createSignInSchema>>;
 
-export const forgotPasswordSchema = z.object({
-  email: z.string().min(1, "Email is required.").email("Enter a valid email address."),
-});
+export function createSignUpSchema(t: Translate) {
+  return z
+    .object({
+      name: z.string().min(2, t("auth.validation.nameRequired")),
+      email: z.string().min(1, t("auth.validation.emailRequired")).email(t("auth.validation.emailInvalid")),
+      password: z
+        .string()
+        .min(8, t("auth.validation.passwordMinLength"))
+        .regex(/[0-9]/, t("auth.validation.passwordNeedsNumber")),
+      confirmPassword: z.string().min(1, t("auth.validation.confirmPasswordRequired")),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("auth.validation.passwordsDoNotMatch"),
+      path: ["confirmPassword"],
+    });
+}
 
-export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
+export type SignUpValues = z.infer<ReturnType<typeof createSignUpSchema>>;
+
+export function createForgotPasswordSchema(t: Translate) {
+  return z.object({
+    email: z.string().min(1, t("auth.validation.emailRequired")).email(t("auth.validation.emailInvalid")),
+  });
+}
+
+export type ForgotPasswordValues = z.infer<ReturnType<typeof createForgotPasswordSchema>>;

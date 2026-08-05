@@ -55,7 +55,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     root.lang = preferences.language;
     root.dir = preferences.language === "ar" ? "rtl" : "ltr";
 
-    const themeColor = preferences.themeMode === "dark" ? "#1E1E1E" : "#FAF0E6";
+    const themeColor = preferences.themeMode === "dark" ? "#1B1B1B" : "#FAF7F0";
     document
       .querySelectorAll('meta[name="theme-color"]')
       .forEach((meta) => meta.setAttribute("content", themeColor));
