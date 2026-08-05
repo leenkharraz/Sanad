@@ -25,7 +25,7 @@ import { ProfileEditForm } from "@/features/profile/profile-edit-form";
 import { ChangeEmailDialog } from "@/features/profile/change-email-dialog";
 import { ChangePasswordDialog } from "@/features/profile/change-password-dialog";
 import { useEmergencyContacts } from "@/features/emergency/use-emergency-contacts";
-import { updateAccountName } from "@/lib/accounts-store";
+import { updateAccountName, updateAccountEmail } from "@/lib/accounts-store";
 import type { SanadProfile } from "@/types/profile";
 
 const NEED_LABEL_KEYS: Record<string, TranslationKey> = {
@@ -75,12 +75,16 @@ export default function ProfilePage() {
     if (savedTimer.current) clearTimeout(savedTimer.current);
   }, []);
 
-  async function handleSave(name: string, patch: SanadProfile) {
+  async function handleSave(name: string, email: string, patch: SanadProfile) {
     if (user && !user.isDemo && name !== user.name) {
       await updateAccountName(user.email, name);
     }
     if (name !== user?.name) {
       updateUser({ name });
+    }
+    if (user && !user.isDemo && email && email.toLowerCase() !== user.email.toLowerCase()) {
+      const updated = await updateAccountEmail(user.email, email);
+      updateUser({ email: updated.email });
     }
     updateProfile(patch);
     setEditing(false);
@@ -129,6 +133,8 @@ export default function ProfilePage() {
       {editing && user ? (
         <ProfileEditForm
           name={user.name}
+          email={user.email}
+          isDemo={user.isDemo}
           profile={profile}
           onSave={handleSave}
           onCancel={() => setEditing(false)}
@@ -256,16 +262,6 @@ export default function ProfilePage() {
                 </button>
               )}
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="touch"
-              className="w-full text-danger hover:bg-danger-soft"
-              onClick={handleSignOut}
-            >
-              <LogOut aria-hidden="true" className="size-4" />
-              {t("settings.signOut")}
-            </Button>
           </section>
 
           {/* 6. Emergency contacts */}
@@ -335,6 +331,17 @@ export default function ProfilePage() {
           <div className="rounded-2xl border border-dashed border-border bg-surface px-4 py-5 text-sm text-text-secondary">
             <p>{t("profile.privacyNotice")}</p>
           </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="touch"
+            className="w-full text-danger hover:bg-danger-soft"
+            onClick={handleSignOut}
+          >
+            <LogOut aria-hidden="true" className="size-4" />
+            {t("settings.signOut")}
+          </Button>
         </>
       )}
 

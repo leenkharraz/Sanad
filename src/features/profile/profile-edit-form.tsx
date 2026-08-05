@@ -8,9 +8,11 @@ import { Label } from "@/components/ui/label";
 import { AccessibilityNeedsEditor } from "@/features/settings/accessibility-needs-editor";
 import { useTranslation, type TranslationKey } from "@/i18n/use-translation";
 import { isValidPhone } from "@/lib/phone";
+import { accountExists } from "@/lib/accounts-store";
 import { BLOOD_TYPES, type SanadProfile } from "@/types/profile";
 
 const MAX_AVATAR_BYTES = 1_000_000;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function todayISODate(): string {
   return new Date().toISOString().slice(0, 10);
@@ -28,6 +30,7 @@ function initials(name: string) {
 
 interface FormErrors {
   name?: TranslationKey;
+  email?: TranslationKey;
   phone?: TranslationKey;
   dateOfBirth?: TranslationKey;
   heightCm?: TranslationKey;
@@ -35,17 +38,22 @@ interface FormErrors {
 
 export function ProfileEditForm({
   name,
+  email,
+  isDemo,
   profile,
   onSave,
   onCancel,
 }: {
   name: string;
+  email: string;
+  isDemo?: boolean;
   profile: SanadProfile;
-  onSave: (name: string, patch: SanadProfile) => void;
+  onSave: (name: string, email: string, patch: SanadProfile) => void;
   onCancel: () => void;
 }) {
   const { t } = useTranslation();
   const [draftName, setDraftName] = useState(name);
+  const [draftEmail, setDraftEmail] = useState(email);
   const [draft, setDraft] = useState<SanadProfile>(profile);
   const [errors, setErrors] = useState<FormErrors>({});
   const [avatarError, setAvatarError] = useState<string | null>(null);
@@ -72,6 +80,19 @@ export function ProfileEditForm({
   function validate(): FormErrors {
     const next: FormErrors = {};
     if (!draftName.trim()) next.name = "auth.validation.nameRequired";
+    if (!isDemo) {
+      const trimmedEmail = draftEmail.trim();
+      if (!trimmedEmail) {
+        next.email = "auth.validation.emailRequired";
+      } else if (!EMAIL_REGEX.test(trimmedEmail)) {
+        next.email = "auth.validation.emailInvalid";
+      } else if (
+        trimmedEmail.toLowerCase() !== email.toLowerCase() &&
+        accountExists(trimmedEmail)
+      ) {
+        next.email = "auth.validation.duplicateAccount";
+      }
+    }
     if (!isValidPhone(draft.phone)) next.phone = "profile.validation.phoneInvalid";
     if (draft.dateOfBirth) {
       const parsed = new Date(draft.dateOfBirth);
@@ -93,7 +114,7 @@ export function ProfileEditForm({
     const nextErrors = validate();
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
-    onSave(draftName.trim(), draft);
+    onSave(draftName.trim(), draftEmail.trim(), draft);
   }
 
   return (
@@ -182,6 +203,27 @@ export function ProfileEditForm({
           {errors.phone && (
             <p role="alert" className="text-xs text-danger">
               {t(errors.phone)}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="profile-email">{t("profile.fields.email")}</Label>
+          <input
+            id="profile-email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            value={draftEmail}
+            onChange={(event) => setDraftEmail(event.target.value)}
+            dir="ltr"
+            disabled={isDemo}
+            aria-invalid={!!errors.email}
+            className="h-11 w-full rounded-xl border border-border bg-background px-3.5 text-start text-sm text-text-primary disabled:opacity-60"
+          />
+          {errors.email && (
+            <p role="alert" className="text-xs text-danger">
+              {t(errors.email)}
             </p>
           )}
         </div>
