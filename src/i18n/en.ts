@@ -124,7 +124,7 @@ export const en = {
         ],
       },
       vision: {
-        title: "Visual Assistance",
+        title: "Vision Assistance",
         description:
           "Provides object detection, obstacle awareness, OCR reading, distance alerts, navigation support, and environmental information.",
         functions: [
@@ -357,6 +357,7 @@ export const en = {
       visionAssistance: "Vision Assistance",
       privacy: "Privacy",
       aboutSanad: "About SANAD",
+      notifications: "Notification Settings",
     },
     signOut: "Sign out",
   },
@@ -364,13 +365,18 @@ export const en = {
   profile: {
     title: "Profile",
     demoAccount: "Demo account",
-    edit: "Edit",
-    personalInfoTitle: "Personal & medical info",
-    accessibilityNeedsTitle: "Accessibility needs",
+    edit: "Edit Profile",
+    personalInfoTitle: "Personal Information",
+    medicalInfoTitle: "Medical & Safety Information",
+    accessibilityNeedsTitle: "Accessibility Needs",
     noAccessibilityNeeds: "None selected yet — choose them during onboarding or in Settings.",
     privacyNotice:
       "Personal details you add here are stored only on this device — there is no backend or production security model yet.",
-    managePreferences: "Manage preferences in Settings",
+    saveSuccess: "Profile updated.",
+    saveChanges: "Save Changes",
+    avatarUploadHint: "Tap to change photo",
+    avatarRemove: "Remove photo",
+    avatarTooLarge: "Choose an image under 1 MB.",
     fields: {
       dateOfBirth: "Date of birth",
       height: "Height",
@@ -378,7 +384,74 @@ export const en = {
       bloodTypePlaceholder: "Select blood type",
       allergies: "Allergies",
       emergencyNote: "Emergency medical note",
-      notSet: "Not set",
+      phone: "Phone Number",
+      email: "Email Address",
+      notSet: "Not provided",
+    },
+    account: {
+      title: "Account",
+      changeEmail: "Change Email",
+      changePassword: "Change Password",
+      changeEmailDialogTitle: "Change email address",
+      changePasswordDialogTitle: "Change password",
+      newEmail: "New Email Address",
+      currentPassword: "Current Password",
+      newPassword: "New Password",
+      confirmNewPassword: "Confirm New Password",
+      incorrectCurrentPassword: "Current password is incorrect.",
+      passwordChanged: "Password changed.",
+      emailChanged: "Email address updated.",
+    },
+    emergencySection: {
+      title: "Emergency Contacts",
+      manage: "Manage Emergency Contacts",
+      empty: "No trusted contacts added yet.",
+    },
+    preferencesSection: {
+      title: "Preferences",
+    },
+    validation: {
+      phoneInvalid: "Enter a valid phone number.",
+      dobInvalid: "Enter a valid date of birth.",
+      heightInvalid: "Enter a reasonable height in cm.",
+    },
+  },
+
+  notifications: {
+    markAllRead: "Mark all as read",
+    justNow: "Just now",
+    minutesAgo: "{count}m ago",
+    hoursAgo: "{count}h ago",
+    daysAgo: "{count}d ago",
+    types: {
+      profileUpdated: {
+        title: "Profile updated",
+        description: "Your profile information was saved.",
+      },
+      accessibilityUpdated: {
+        title: "Accessibility preferences updated",
+        description: "Your accessibility needs were changed.",
+      },
+      emergencyContactAdded: {
+        title: "Emergency contact added",
+        description: "{name} was added to your trusted contacts.",
+      },
+      emergencyContactRemoved: {
+        title: "Emergency contact removed",
+        description: "{name} was removed from your trusted contacts.",
+      },
+      captionSettingsUpdated: {
+        title: "Caption preferences updated",
+        description: "Your caption display settings were saved.",
+      },
+      voiceSettingsUpdated: {
+        title: "Voice settings updated",
+        description: "Your default voice was changed.",
+      },
+      languageChanged: {
+        title: "Language changed",
+        description: "SANAD's interface language was updated.",
+      },
     },
   },
 
@@ -490,6 +563,18 @@ export const en = {
       versionLabel: "Version",
       prototypeNotice:
         "SANAD is a prototype. Features that depend on physical SANAD Glasses hardware are previewed and clearly labeled — they don't yet control a real device.",
+    },
+    notifications: {
+      safety: "Safety Notifications",
+      safetyHint: "Emergency contact changes and safety-related alerts.",
+      accessibility: "Accessibility Reminders",
+      accessibilityHint: "Updates when your accessibility needs change.",
+      device: "Device Notifications",
+      deviceHint: "Caption and voice setting changes for SANAD Glasses.",
+      general: "General App Notifications",
+      generalHint: "Profile and language updates.",
+      pushNotice:
+        "These control in-app notifications only — SANAD has no push notification service configured yet.",
     },
   },
 

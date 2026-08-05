@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useSpeechSynthesis } from "@/hooks/use-speech-synthesis";
 import { usePreferences } from "@/components/providers/preferences-provider";
+import { useNotifications } from "@/components/providers/notifications-provider";
 import { useTranslation } from "@/i18n/use-translation";
 
 /** Only labels a voice Female/Male when the browser's own voice name says so
@@ -21,6 +22,7 @@ function detectVoiceGender(name: string): "female" | "male" | null {
 export function VoiceSettingsScreen() {
   const { status, voices, speak } = useSpeechSynthesis();
   const { preferences, updatePreferences } = usePreferences();
+  const { addNotification } = useNotifications();
   const { t } = useTranslation();
   const settings = preferences.voiceSettings;
 
@@ -59,7 +61,10 @@ export function VoiceSettingsScreen() {
             id="default-voice"
             dir="ltr"
             value={selectedVoice?.voiceURI ?? ""}
-            onChange={(event) => patch({ voiceURI: event.target.value })}
+            onChange={(event) => {
+              patch({ voiceURI: event.target.value });
+              addNotification("voiceSettingsUpdated");
+            }}
             className="h-11 w-full rounded-xl border border-border bg-surface px-3.5 text-start text-sm text-text-primary"
           >
             {voices.map((voice) => {

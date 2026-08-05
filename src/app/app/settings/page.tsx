@@ -13,6 +13,7 @@ import {
   Eye,
   Lock,
   Info,
+  Bell,
   ChevronRight,
   type LucideIcon,
 } from "lucide-react";
@@ -22,6 +23,7 @@ import { AccessibilityNeedsEditor } from "@/features/settings/accessibility-need
 import { AppTextDisplaySection } from "@/features/settings/app-text-display-section";
 import { usePreferences } from "@/components/providers/preferences-provider";
 import { useSession } from "@/components/providers/session-provider";
+import { useNotifications } from "@/components/providers/notifications-provider";
 import { useTranslation, type TranslationKey } from "@/i18n/use-translation";
 
 interface MoreSettingsRow {
@@ -38,12 +40,14 @@ const MORE_SETTINGS_ROWS: MoreSettingsRow[] = [
   { titleKey: "settings.rows.visionAssistance", icon: Eye, href: "/app/settings/vision-assistance" },
   { titleKey: "settings.rows.privacy", icon: Lock, href: "/app/settings/privacy" },
   { titleKey: "settings.rows.aboutSanad", icon: Info, href: "/app/settings/about" },
+  { titleKey: "settings.rows.notifications", icon: Bell, href: "/app/settings/notifications" },
 ];
 
 export default function SettingsPage() {
   const router = useRouter();
   const { preferences, updatePreferences } = usePreferences();
   const { signOut } = useSession();
+  const { addNotification } = useNotifications();
   const { t } = useTranslation();
 
   function handleSignOut() {
@@ -67,7 +71,10 @@ export default function SettingsPage() {
         <SegmentedControl
           ariaLabel={t("settings.languageTitle")}
           value={preferences.language}
-          onChange={(language) => updatePreferences({ language })}
+          onChange={(language) => {
+            updatePreferences({ language });
+            addNotification("languageChanged");
+          }}
           options={[
             { value: "en", label: "English" },
             { value: "ar", label: "العربية" },

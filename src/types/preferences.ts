@@ -1,3 +1,6 @@
+import type { NotificationPreferences } from "@/types/notification";
+import { DEFAULT_NOTIFICATION_PREFERENCES } from "@/types/notification";
+
 export type AccessibilityNeed = "hearing" | "vision" | "speech";
 
 export type AppLanguage = "en" | "ar";
@@ -71,6 +74,7 @@ export interface UserPreferences {
   voiceSettings: VoiceSettings;
   translation: TranslationPreference;
   visionAssistance: VisionAssistanceSettings;
+  notificationPreferences: NotificationPreferences;
 }
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
@@ -92,4 +96,5 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   voiceSettings: { voiceURI: "", speechRate: 1 },
   translation: { from: "en", to: "ar" },
   visionAssistance: { objectDetection: false, distanceAlerts: false, readingMode: false },
+  notificationPreferences: DEFAULT_NOTIFICATION_PREFERENCES,
 };

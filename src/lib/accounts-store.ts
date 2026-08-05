@@ -94,3 +94,53 @@ export function updateAccountName(email: string, name: string): SanadUser {
   writeAccounts(db);
   return toPublicUser(record);
 }
+
+/** Email is the account's real identity (and the DB's lookup key), not
+ * decorative Profile text — this moves the record to the new key so the new
+ * email is what future Sign In looks up, and the old email stops working.
+ * Every other piece of this account's data (preferences, profile, quick
+ * phrases, contacts, notifications) is scoped by account id, not email, so
+ * nothing else needs to move. */
+export async function updateAccountEmail(currentEmail: string, newEmail: string): Promise<SanadUser> {
+  const normalizedCurrent = normalizeEmail(currentEmail);
+  const normalizedNew = normalizeEmail(newEmail);
+  const db = readAccounts();
+  const record = db[normalizedCurrent];
+  if (!record) {
+    throw new Error("UNKNOWN_ACCOUNT");
+  }
+  if (normalizedNew !== normalizedCurrent && db[normalizedNew]) {
+    throw new Error("DUPLICATE_ACCOUNT");
+  }
+  record.email = normalizedNew;
+  delete db[normalizedCurrent];
+  db[normalizedNew] = record;
+  writeAccounts(db);
+  return toPublicUser(record);
+}
+
+/** Real password change — verifies the current password against the stored
+ * hash (no backend, but no shortcut either: a wrong current password is
+ * rejected the same way Sign In rejects one) before hashing and storing the
+ * new one. Never returns or logs the password itself. */
+export async function updateAccountPassword(
+  email: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<void> {
+  const normalized = normalizeEmail(email);
+  const db = readAccounts();
+  const record = db[normalized];
+  if (!record) {
+    throw new Error("UNKNOWN_ACCOUNT");
+  }
+  const valid = await verifyPassword(currentPassword, record.passwordHash, record.passwordSalt);
+  if (!valid) {
+    throw new Error("INCORRECT_PASSWORD");
+  }
+  const { hash, salt } = await hashPassword(newPassword);
+  record.passwordHash = hash;
+  record.passwordSalt = salt;
+  db[normalized] = record;
+  writeAccounts(db);
+}

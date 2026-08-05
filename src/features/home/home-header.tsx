@@ -6,6 +6,7 @@ import { Bell, Sparkles } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AmbientGlow } from "@/components/design-system/ambient-glow";
 import { useSession } from "@/components/providers/session-provider";
+import { useNotifications } from "@/components/providers/notifications-provider";
 import { useTranslation } from "@/i18n/use-translation";
 
 function initials(name: string) {
@@ -20,9 +21,9 @@ function initials(name: string) {
 
 export function HomeHeader() {
   const { session } = useSession();
+  const { unreadCount } = useNotifications();
   const { t } = useTranslation();
   const [now, setNow] = useState<Date | null>(null);
-  const [showNotice, setShowNotice] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -62,25 +63,23 @@ export function HomeHeader() {
           >
             <Sparkles aria-hidden="true" className="size-5" />
           </Link>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowNotice((v) => !v)}
-              aria-label={t("home.notifications")}
-              aria-expanded={showNotice}
-              className="flex size-11 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface-soft hover:text-text-primary"
-            >
-              <Bell aria-hidden="true" className="size-5" />
-            </button>
-            {showNotice && (
-              <div
-                role="status"
-                className="absolute end-0 z-10 mt-2 w-56 rounded-xl border border-border bg-surface p-3 text-xs text-text-secondary shadow-lg"
-              >
-                {t("home.noNotifications")}
-              </div>
+          <Link
+            href="/app/notifications"
+            aria-label={
+              unreadCount > 0
+                ? `${t("home.notifications")} (${unreadCount})`
+                : t("home.notifications")
+            }
+            className="relative flex size-11 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface-soft hover:text-text-primary"
+          >
+            <Bell aria-hidden="true" className="size-5" />
+            {unreadCount > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute end-2 top-2 size-2 rounded-full bg-danger ring-2 ring-background"
+              />
             )}
-          </div>
+          </Link>
         </div>
       </div>
     </header>

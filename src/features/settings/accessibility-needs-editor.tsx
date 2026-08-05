@@ -3,10 +3,12 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ACCESSIBILITY_NEED_OPTIONS } from "@/data/accessibility-needs";
 import { usePreferences } from "@/components/providers/preferences-provider";
+import { useNotifications } from "@/components/providers/notifications-provider";
 import { useTranslation } from "@/i18n/use-translation";
 
 export function AccessibilityNeedsEditor() {
   const { preferences, toggleAccessibilityNeed } = usePreferences();
+  const { addNotification } = useNotifications();
   const { t } = useTranslation();
 
   return (
@@ -22,7 +24,10 @@ export function AccessibilityNeedsEditor() {
           >
             <Checkbox
               checked={checked}
-              onCheckedChange={() => toggleAccessibilityNeed(option.id)}
+              onCheckedChange={() => {
+                toggleAccessibilityNeed(option.id);
+                addNotification("accessibilityUpdated");
+              }}
               aria-label={title}
             />
             <Icon aria-hidden="true" className="size-4 text-brand-700" />

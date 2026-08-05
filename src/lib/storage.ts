@@ -6,6 +6,7 @@ export const STORAGE_KEYS = {
   emergencyMessage: "sanad.emergencyMessage",
   accounts: "sanad.accounts",
   profiles: "sanad.profiles",
+  notifications: "sanad.notifications",
 } as const;
 
 /** Scope used for all per-user storage before anyone is signed in (or for

@@ -10,11 +10,13 @@ import { FontSizeSelector } from "@/features/settings/font-size-selector";
 import { CAPTION_COLORS, captionColorHex, hexToRgba } from "@/data/caption-colors";
 import { CAPTION_POSITIONS, captionPositionClasses } from "@/data/caption-positions";
 import { usePreferences } from "@/components/providers/preferences-provider";
+import { useNotifications } from "@/components/providers/notifications-provider";
 import { useTranslation } from "@/i18n/use-translation";
 import type { CaptionColor, CaptionPosition } from "@/types/preferences";
 
 export function CaptionDisplayScreen() {
   const { preferences, updatePreferences } = usePreferences();
+  const { addNotification } = useNotifications();
   const { t } = useTranslation();
   const settings = preferences.captionDisplay;
   const [savedVisible, setSavedVisible] = useState(false);
@@ -35,6 +37,7 @@ export function CaptionDisplayScreen() {
     setSavedVisible(true);
     if (savedTimer.current) clearTimeout(savedTimer.current);
     savedTimer.current = setTimeout(() => setSavedVisible(false), 2500);
+    addNotification("captionSettingsUpdated");
   }
 
   return (

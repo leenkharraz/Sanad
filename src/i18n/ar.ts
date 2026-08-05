@@ -113,7 +113,7 @@ export const ar: Translations = {
     },
     needs: {
       hearing: {
-        title: "مساعدة السمع",
+        title: "المساعدة السمعية",
         description: "توفّر ترجمة نصية مباشرة، وتنبيهات عند مناداة اسمك، وتنبيهات بالأصوات المحيطة، وتصفية للضوضاء، وترجمة، ومؤشرات للأهمية العاجلة.",
         functions: [
           "ترجمة نصية مباشرة",
@@ -124,7 +124,7 @@ export const ar: Translations = {
         ],
       },
       vision: {
-        title: "مساعدة الرؤية",
+        title: "المساعدة البصرية",
         description: "توفّر كشف الأجسام، والوعي بالعوائق، وقراءة النصوص، وتنبيهات المسافة، ودعم التنقل، ومعلومات عن المحيط.",
         functions: [
           "كشف الأجسام",
@@ -135,7 +135,7 @@ export const ar: Translations = {
         ],
       },
       speech: {
-        title: "مساعدة التحدث",
+        title: "المساعدة على التواصل",
         description: "توفّر تحويل النص إلى كلام، وأصواتًا مخصصة، وعبارات سريعة، ورسائل محفوظة، ودعمًا للتواصل.",
         functions: [
           "تحويل النص إلى كلام",
@@ -351,6 +351,7 @@ export const ar: Translations = {
       visionAssistance: "المساعدة البصرية",
       privacy: "الخصوصية",
       aboutSanad: "عن سند",
+      notifications: "إعدادات الإشعارات",
     },
     signOut: "تسجيل الخروج",
   },
@@ -358,12 +359,17 @@ export const ar: Translations = {
   profile: {
     title: "الملف الشخصي",
     demoAccount: "حساب تجريبي",
-    edit: "تعديل",
-    personalInfoTitle: "المعلومات الشخصية والطبية",
-    accessibilityNeedsTitle: "احتياجات إمكانية الوصول",
+    edit: "تعديل الملف الشخصي",
+    personalInfoTitle: "المعلومات الشخصية",
+    medicalInfoTitle: "المعلومات الطبية ومعلومات السلامة",
+    accessibilityNeedsTitle: "احتياجات الوصول",
     noAccessibilityNeeds: "لم يتم تحديد أي شيء بعد — اختَرها أثناء الإعداد الأولي أو من الإعدادات.",
     privacyNotice: "المعلومات الشخصية التي تضيفها هنا تُخزَّن على هذا الجهاز فقط — لا يوجد خادم خلفي أو نموذج أمان جاهز للإنتاج بعد.",
-    managePreferences: "إدارة التفضيلات من الإعدادات",
+    saveSuccess: "تم تحديث الملف الشخصي.",
+    saveChanges: "حفظ التغييرات",
+    avatarUploadHint: "اضغط لتغيير الصورة",
+    avatarRemove: "إزالة الصورة",
+    avatarTooLarge: "اختر صورة أصغر من 1 ميجابايت.",
     fields: {
       dateOfBirth: "تاريخ الميلاد",
       height: "الطول",
@@ -371,7 +377,74 @@ export const ar: Translations = {
       bloodTypePlaceholder: "اختر فصيلة الدم",
       allergies: "الحساسية",
       emergencyNote: "ملاحظة طبية للطوارئ",
-      notSet: "غير محدد",
+      phone: "رقم الجوال",
+      email: "البريد الإلكتروني",
+      notSet: "غير مضاف",
+    },
+    account: {
+      title: "الحساب",
+      changeEmail: "تغيير البريد الإلكتروني",
+      changePassword: "تغيير كلمة المرور",
+      changeEmailDialogTitle: "تغيير عنوان البريد الإلكتروني",
+      changePasswordDialogTitle: "تغيير كلمة المرور",
+      newEmail: "عنوان البريد الإلكتروني الجديد",
+      currentPassword: "كلمة المرور الحالية",
+      newPassword: "كلمة المرور الجديدة",
+      confirmNewPassword: "تأكيد كلمة المرور الجديدة",
+      incorrectCurrentPassword: "كلمة المرور الحالية غير صحيحة.",
+      passwordChanged: "تم تغيير كلمة المرور.",
+      emailChanged: "تم تحديث البريد الإلكتروني.",
+    },
+    emergencySection: {
+      title: "جهات اتصال الطوارئ",
+      manage: "إدارة جهات اتصال الطوارئ",
+      empty: "لم تُضَف أي جهة اتصال موثوقة بعد.",
+    },
+    preferencesSection: {
+      title: "التفضيلات",
+    },
+    validation: {
+      phoneInvalid: "أدخل رقم هاتف صحيحًا.",
+      dobInvalid: "أدخل تاريخ ميلاد صحيحًا.",
+      heightInvalid: "أدخل طولًا معقولًا بالسنتيمتر.",
+    },
+  },
+
+  notifications: {
+    markAllRead: "تعيين الكل كمقروء",
+    justNow: "الآن",
+    minutesAgo: "قبل {count} د",
+    hoursAgo: "قبل {count} س",
+    daysAgo: "قبل {count} ي",
+    types: {
+      profileUpdated: {
+        title: "تم تحديث الملف الشخصي",
+        description: "تم حفظ معلومات ملفك الشخصي.",
+      },
+      accessibilityUpdated: {
+        title: "تم تحديث احتياجات الوصول",
+        description: "تم تغيير احتياجات الوصول الخاصة بك.",
+      },
+      emergencyContactAdded: {
+        title: "تمت إضافة جهة اتصال طوارئ",
+        description: "تمت إضافة {name} إلى جهات اتصالك الموثوقة.",
+      },
+      emergencyContactRemoved: {
+        title: "تمت إزالة جهة اتصال طوارئ",
+        description: "تمت إزالة {name} من جهات اتصالك الموثوقة.",
+      },
+      captionSettingsUpdated: {
+        title: "تم تحديث إعدادات الترجمة",
+        description: "تم حفظ إعدادات عرض الترجمة الخاصة بك.",
+      },
+      voiceSettingsUpdated: {
+        title: "تم تحديث إعدادات الصوت",
+        description: "تم تغيير الصوت الافتراضي الخاص بك.",
+      },
+      languageChanged: {
+        title: "تم تغيير اللغة",
+        description: "تم تحديث لغة واجهة سند.",
+      },
     },
   },
 
@@ -483,6 +556,17 @@ export const ar: Translations = {
       versionLabel: "الإصدار",
       prototypeNotice:
         "سند نسخة تجريبية. الميزات التي تعتمد على عتاد نظارة سند الفعلي مُعروضة كمعاينة ومُوضَّحة بوضوح — فهي لا تتحكم بجهاز حقيقي بعد.",
+    },
+    notifications: {
+      safety: "إشعارات السلامة",
+      safetyHint: "تغييرات جهات اتصال الطوارئ والتنبيهات المتعلقة بالسلامة.",
+      accessibility: "تذكيرات إمكانية الوصول",
+      accessibilityHint: "تحديثات عند تغيير احتياجات الوصول الخاصة بك.",
+      device: "إشعارات الجهاز",
+      deviceHint: "تغييرات إعدادات الترجمة والصوت الخاصة بنظارة سند.",
+      general: "إشعارات التطبيق العامة",
+      generalHint: "تحديثات الملف الشخصي واللغة.",
+      pushNotice: "تتحكم هذه فقط في إشعارات داخل التطبيق — لا تمتلك سند خدمة إشعارات فورية (push) مُهيأة بعد.",
     },
   },
 
